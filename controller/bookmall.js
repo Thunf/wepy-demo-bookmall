@@ -4,7 +4,7 @@
  * wx小程序：wepy-demo-bookmall 
  */
 
-const mock = require('../mock.js')
+const mock = require('./mock.js')
 const mockData = {
     list: mock.get('app/school/list')
 }
