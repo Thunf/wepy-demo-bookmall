@@ -1,6 +1,6 @@
 {
-  "name": "myproject",
-  "version": "1.2.8",
+  "name": "wepy-demo-bookmall",
+  "version": "1.0.0",
   "description": "",
   "main": "dist/app.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "MIT",
+  "license": "GPL-3.0",
   "dependencies": {
     "wepy": "^1.5.8",
     "wepy-async-function": "^1.4.4",

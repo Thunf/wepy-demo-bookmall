@@ -1,4 +1,7 @@
 dist
+web
+.wepycache
+.DS_Store
 
 # Logs
 logs
