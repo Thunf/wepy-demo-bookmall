@@ -6,7 +6,7 @@
 
 const mock = require('./mock.js')
 const mockData = {
-    list: mock.get('app/school/list')
+    list: mock.get('bookmall/list')
 }
 
 // 列表接口
