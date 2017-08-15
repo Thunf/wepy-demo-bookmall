@@ -1,5 +1,6 @@
 <template>
   <view class="page-index">
+    <Swiper :list.sync="swipers" height="280"></Swiper>
     <block wx:for="{{list}}" wx:for-item="book" wx:key="index">
       <view>{{index+1}}.{{book.title}}: {{book.content}}</view>
     </block>
@@ -11,6 +12,7 @@
   import { service } from '../config.js'
   import base from '../mixins/base'
   import http from '../mixins/http'
+  import Swiper from '../components/swiper'
 
   export default class Index extends wepy.page {
     mixins = [base, http]
@@ -20,6 +22,10 @@
       navigationBarBackgroundColor: '#049BFF'
     }
     data = {
+      swipers: [
+        // 占位图，防止请求错误无图显示
+        {image: '../images/swiper.png'}
+      ],
       list: [],
       page: 0,
       size: 5
@@ -44,17 +50,16 @@
       // 请求列表
       this.$get({url: `${service.list}`}, {
         success: ({ data }) => {
+          this.list = this.getArray(data).map((book, index) => {
+            return {
+              title: `Book ${index}`,
+              content: book.title
+            }
+          })
+          this.swipers.push({image: '../images/swiper.png'})
         },
         fail: ({code, message}) => {
         }
-      })
-
-      // 假装获取数据
-      ;[1, 2, 3].map((index) => {
-        this.list.push({
-          title: `Book ${index}`,
-          content: 'This is a book'
-        })
       })
     }
 
@@ -62,6 +67,7 @@
     }
 
     components = {
+      Swiper
     }
   }
 </script>
