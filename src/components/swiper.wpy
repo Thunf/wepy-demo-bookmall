@@ -1,0 +1,78 @@
+<template>
+  <swiper class="swiper" style="height:{{style_height}}" autoplay="{{autoplay}}"
+   indicator-dots="{{indicatorDots}}" 
+   indicator-color="{{indicatorColor}}"
+   indicator-active-color="{{indicatorActiveColor}}">
+    <block wx:for="{{list}}" wx:key="index">
+      <swiper-item>
+        <navigator wx:if="{{item.url}}" url="{{item.url}}">
+          <image src="{{item.image}}" style="height:{{style_height}}" class="swiper-image" mode="widthFix"/>
+        </navigator>
+        <view wx:else style="height:{{style_height}}">
+          <image src="{{item.image}}" style="height:{{style_height}}" class="swiper-image" mode="aspectFit"/>
+        </view>
+      </swiper-item>
+    </block>
+  </swiper>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import base from '../mixins/base.js'
+
+  export default class SearchBar extends wepy.component {
+    mixins = [base]
+    props = {
+      list: {
+        type: Object,
+        default: []
+      },
+      height: {
+        type: [String, Number],
+        default: '240rpx'
+      },
+      dots: {
+        type: Boolean,
+        default: true
+      }
+    }
+
+    data = {
+      autoplay: true,
+      indicatorColor: 'rgba(255, 255, 255, 0.6)',
+      indicatorActiveColor: 'rgba(255, 255, 255, 1)'
+    }
+
+    computed = {
+      indicatorDots() {
+        return Boolean(this.list.length > 1 && this.dots)
+      },
+      style_height() {
+        const h = this.height
+        return this.isNumber(+h) ? `${h}rpx` : this.isMatchHeight(h) ? h : '240rpx'
+      }
+    }
+
+    methods = {
+    }
+
+    isMatchHeight(str) {
+      return this.isString(str) ? /\d+(r?px|em)$/.test(str) : false
+    }
+  }
+</script>
+
+<style type="less">
+swiper,
+.swiper{
+  width: 100%;
+}
+
+.swiper-image{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  transform: translate(-50%, -50%);
+}
+</style>
