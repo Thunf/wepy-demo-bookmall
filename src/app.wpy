@@ -41,6 +41,6 @@ export default class extends wepy.app {
 </script>
 
 <style lang="less">
-// @import "./styles/weui/index.less";
-// @import "./styles/custom/index.less";
+@import "./styles/weui/index.less";
+@import "./styles/custom/index.less";
 </style>
