@@ -1,0 +1,56 @@
+button {
+  line-height: 2.5;
+  border-radius: 1.25em;
+  &:after{
+    display: none;
+  }
+}
+
+@uiBtnColor-primary: #fff;
+@uiBtnColor-default: #AEAEAE;
+
+button[type="primary"] {
+  color: @uiBtnColor-primary;
+  background-color: @uiColorGreen;
+}
+[type="primary"].button-hover {
+  color: fade(@uiBtnColor-primary, 60%);
+  background-color: darken(@uiColorGreen, 10%);
+}
+button[disabled][type="primary"] {
+  color: @uiBtnColor-primary;
+  background-color: lighten(@uiColorGreen, 20%);
+}
+button[type="primary"].btn-primary{
+  margin: 30rpx;
+  margin-top: 20rpx;
+}
+
+
+button[type="default"] {
+  color: @uiBtnColor-default;
+  background-color: transparent;
+  border: 1rpx solid lighten(@uiBtnColor-default, 11.75%);
+  &:after{display: none;}
+}
+[type="default"].button-hover {
+  color: darken(@uiBtnColor-default, 5%);
+  background-color: transparent;
+  border-color: darken(@uiBtnColor-default, 15%);
+}
+button[disabled][type="default"] {
+  color: fade(@uiBtnColor-primary, 60%);
+  background-color: transparent;
+  border-color: lighten(@uiBtnColor-default, 15%);
+}
+
+
+button[size="mini"] {
+  .h4();
+  padding: 0 1.4em;
+}
+
+button.btn-block{
+  border-radius: 0;
+
+}

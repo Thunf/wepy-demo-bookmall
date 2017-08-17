@@ -1,0 +1,54 @@
+
+// link
+@uiLink-text-base: @uiColorGreen;
+
+// link-green
+@uiLink-green-base: @uiColorGreen;
+@uiLink-green-dark: darken(@uiLink-green-base, 10%);
+
+// link-red
+@uiLink-red-base: @uiColorRed;
+@uiLink-red-dark: darken(@uiLink-red-base, 10%);
+
+.hover(@uiLink-text-hover: #f66){
+    color: @uiLink-text-hover;
+}
+
+.disabled(@uiLink-text-disabled: #ccc){
+    color: @uiLink-text-disabled !important;
+    cursor: not-allowed;
+}
+
+.link{
+    color : @uiLink-text-base;
+    font-size:  inherit;
+    font-style: normal;
+    cursor: pointer;
+    text-decoration: none;
+
+    &:hover,
+    &:active{
+        .box-shadow(none);
+    }
+
+    &.link-green{
+        color: @uiLink-green-base;
+
+        &:active{
+            .hover(@uiLink-green-dark);
+            text-decoration: underline;
+        }
+    }
+
+    &.link-red{
+        color: @uiLink-red-base;
+
+        &:active{
+            .hover(@uiLink-red-dark);
+        }
+    }
+
+    &.disabled{
+        .disabled();
+    }
+}

@@ -1,0 +1,31 @@
+
+.h1() {
+  font-size: 56rpx !important;
+}
+.h2() {
+  font-size: 40rpx !important;
+}
+.h3() {
+  font-size: 32rpx !important;
+}
+.h4() {
+  font-size: 28rpx !important;
+}
+.h5() {
+  font-size: 24rpx !important;
+}
+
+.text-ellipsis() {
+  display:block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.text-ellipsis-line(@line) {
+  display: -webkit-box;
+  -webkit-line-clamp: @line;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-all;
+  text-overflow: ellipsis;
+}
