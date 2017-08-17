@@ -1,5 +1,6 @@
 <template>
   <view class="page-index">
+    <SearchBar :placeholder="searchText"></SearchBar>
     <Swiper :list.sync="swipers" height="280"></Swiper>
     <block wx:for="{{list}}" wx:for-item="book" wx:key="index">
       <view>{{index+1}}.{{book.title}}: {{book.content}}</view>
@@ -13,6 +14,7 @@
   import base from '../mixins/base'
   import http from '../mixins/http'
   import Swiper from '../components/swiper'
+  import SearchBar from '../components/searchbar'
 
   export default class Index extends wepy.page {
     mixins = [base, http]
@@ -22,6 +24,7 @@
       navigationBarBackgroundColor: '#049BFF'
     }
     data = {
+      searchText: 'book',
       swipers: [
         // 占位图，防止请求错误无图显示
         {image: '../images/swiper.png'}
@@ -67,6 +70,7 @@
     }
 
     components = {
+      SearchBar,
       Swiper
     }
   }
