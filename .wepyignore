@@ -1,4 +1,5 @@
 node_modules
 dist
+styles/
 .DB_store
 *.wpy___jb_tmp___
