@@ -9,7 +9,7 @@ exports.schema = [{
   title: { type: String },
   name: { type: String }
 }, {
-	collection: model,
+  collection: model,
   autoIndex: true,
   versionKey: false
 }];
