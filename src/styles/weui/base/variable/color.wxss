@@ -1,6 +1,5 @@
 // color
-// @weuiColorPrimary: #1AAD19;
-@weuiColorPrimary: #5cbaa7;
+@weuiColorPrimary: #1AAD19;
 @weuiColorWarn: #E64340;
 
 // link

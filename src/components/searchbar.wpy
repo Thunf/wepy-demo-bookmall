@@ -64,6 +64,6 @@
 @import "../styles/custom/fn.less";
 
 .weui-search-bar__cancel-btn {
-  color: @uiColorGreen;
+  color: @weuiColorPrimary;
 }
 </style>
