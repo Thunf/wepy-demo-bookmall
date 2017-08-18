@@ -21,7 +21,7 @@ exports.list = function*() {
 
 
 exports.test = function*() {
-  let test = yield this.mongo('Test').list();
+  let test = yield this.mongo('test').list();
   this.body = {
     code: test ? 0 : 404,
     data: test || {},

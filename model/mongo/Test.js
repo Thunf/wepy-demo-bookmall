@@ -1,7 +1,7 @@
 'use strict';
 
 // model名称，即表名
-exports.model = 'Test';
+const model = exports.model = 'test';
 
 // 表结构
 exports.schema = [{
@@ -9,6 +9,7 @@ exports.schema = [{
   title: { type: String },
   name: { type: String }
 }, {
+	collection: model,
   autoIndex: true,
   versionKey: false
 }];
@@ -20,6 +21,6 @@ exports.statics = {};
 // http://mongoosejs.com/docs/guide.html#methods
 exports.methods = {
   list: function* () {
-    return this.model(exports.model).find();
+    return this.model(model).find();
   }
 }
