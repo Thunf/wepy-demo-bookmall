@@ -1,0 +1,91 @@
+<template>
+  <view class="category clearfix">
+    <block wx:for="{{list}}" wx:key="index">
+
+      <navigator wx:if="{{item.url}}" url="{{item.url}}" class="category-item" style="width:{{style_width}}">
+        <view class="category-icon-wrapper">
+          <image src="{{item.image}}" class="category-icon" mode="aspectFit"/>
+        </view>
+        <view class="category-text">{{item.title}}</view>
+      </navigator>
+      <view wx:else class="category-item" style="width:{{style_width}}">
+        <view class="category-icon-wrapper">
+          <image src="{{item.image}}" class="category-icon" mode="aspectFit"/>
+        </view>
+        <view class="category-text">{{item.title}}</view>
+      </view>
+
+    </block>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import base from '../mixins/base.js'
+
+  export default class SearchBar extends wepy.component {
+    mixins = [base]
+    props = {
+      list: {
+        type: Object,
+        default: []
+      },
+      col: {
+        type: [String, Number],
+        default: 4
+      }
+    }
+
+    data = {
+    }
+
+    computed = {
+      style_width() {
+        const col = this.col
+        return this.getPercent(this.isNumber(+col) ? 1 / (+col) : 0.25)
+      }
+    }
+
+    methods = {
+    }
+
+    getPercent(num) {
+      return this.isNumber(num) ? `${num * 100}%` : '0%'
+    }
+  }
+</script>
+
+<style type="less">
+@import "../styles/custom/fn.less";
+
+.category{
+  position: relative;
+  width: 100%;
+  border-bottom: 20rpx solid @weuiBgColorDefault;
+  font-size: 14px;
+  background: #fff;
+}
+.category-item{
+  float: left;
+  padding: 1.2em 0;
+  text-align: center;
+  overflow: hidden;
+}
+.category-icon-wrapper{
+  position: relative;
+  width: 50%;
+  height: 0;
+  margin: auto;
+  padding-bottom: 50%;
+}
+.category-icon{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+}
+.category-text{
+  color: #999;
+}
+</style>
