@@ -1,0 +1,153 @@
+<template>
+  <view class="main-search">
+    <block wx:if="{{items1}}">
+      <checkboxButton1 :title.sync="title1" :list.sync="items1" :value.sync="value1"></checkboxButton1>
+    </block>
+    <block wx:if="{{items2}}">
+      <checkboxButton2 :title.sync="title2" :list.sync="items2" :value.sync="value2"></checkboxButton2>
+    </block>
+    <block wx:if="{{items3}}">
+      <checkboxButton3 :title.sync="title3" :list.sync="items3" :value.sync="value3"></checkboxButton3>
+    </block>
+    <button @tap="search" class="weui-btn" type="primary">确认</button>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import { service } from '../../config.js'
+  import base from '../../mixins/base'
+  import http from '../../mixins/http'
+  import checkboxButton from '../../components/checkboxButton'
+
+  export default class mainSearch extends wepy.page {
+    mixins = [base, http]
+    config = {
+      navigationBarTitleText: '借书'
+    }
+    data = {
+      key1: '',
+      key2: '',
+      key3: '',
+      title1: '',
+      title2: '',
+      title3: '',
+      value1: '',
+      value2: '',
+      value3: '',
+      items1: undefined,
+      items2: undefined,
+      items3: undefined,
+      lists: [
+        // {
+        //   key: 'age',
+        //   title: 'name',
+        //   value: '',
+        //   list: [
+        //     {name: 'xxx', value: '1'},
+        //     {name: 'yyy', value: '2'}
+        //   ]
+        // }
+      ],
+      exdata: [{
+        code: 'demo',
+        name: 'title',
+        list: [
+          {name: 'xxx', value: '1'},
+          {name: 'yyy', value: '2'}
+        ]
+      }]
+    }
+
+    onReady() {
+      // 初始化页面数据
+      this.initPageData()
+    }
+
+    onPullDownRefresh() {
+      wx.stopPullDownRefresh()
+    }
+
+    // 初始化页面数据
+    initPageData() {
+      // 获取tag列表
+      this.$get({url: service.tags}, {
+        success: ({code, data}) => {
+          const arr = this.getArray(data || this.exdata)
+          const lists = arr.map(({code, name, list}) => {
+            return {
+              key: code,
+              title: name,
+              list: list && list.map((item) => {
+                return {
+                  name: item && item.name,
+                  value: item && item.value
+                }
+              })
+            }
+          })
+          this.lists = lists
+
+          for (var i = lists.length - 1; i >= 0; i--) {
+            this[`key${i + 1}`] = lists[i].key
+            this[`title${i + 1}`] = lists[i].title
+            this[`value${i + 1}`] = lists[i].value
+            this[`items${i + 1}`] = lists[i].list
+          }
+        },
+        fail: ({code, data}) => {
+          // 如果获取失败，就直接跳转到列表页
+          wx.redirectTo({
+            url: `/pages/main/list`
+          })
+        }
+      })
+    }
+
+    methods = {
+      search() {
+        const params = {title: []}
+        ;[1, 2, 3].map((i) => {
+          const items = `items${i}`
+          const value = `value${i}`
+          const key = `key${i}`
+          if (this[value] && this[key]) {
+            params[`${this[key]}_id`] = this.isArray(this[value]) ? this[value] : [this[value]]
+          }
+          // 整理条件对应的文案信息
+          if (this[items]) {
+            const titleArr = this.getArray(this[items]).filter((item) => {
+              return this.getArray(params[`${this[key]}_id`]).indexOf(this.getString(item.value)) > -1
+            }).map((item) => {
+              return item.name
+            })
+            if (titleArr && titleArr.length) {
+              params.title = [...params.title, ...titleArr]
+            }
+          }
+        })
+        params.title = params.title.join(' ')
+        wx.redirectTo({
+          url: `/pages/main/list?params=${JSON.stringify(params)}`
+        })
+      }
+    }
+
+    components = {
+      checkboxButton1: checkboxButton,
+      checkboxButton2: checkboxButton,
+      checkboxButton3: checkboxButton
+    }
+  }
+</script>
+
+<style lang="less">
+page{
+  background: #fff;
+}
+
+.main-search{
+  position:relative;
+  padding: 14px 15px 10px;
+}
+</style>
