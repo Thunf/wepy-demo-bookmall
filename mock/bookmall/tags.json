@@ -1,0 +1,53 @@
+[{
+    "name": "天",
+    "code": "demo1",
+    "list": [{
+        "name": "枯藤",
+        "value": "1"
+    }, {
+        "name": "老树",
+        "value": "2"
+    }, {
+        "name": "昏鸦",
+        "value": "3"
+    }]
+}, {
+    "name": "净",
+    "code": "demo2",
+    "list": [{
+        "name": "小桥",
+        "value": "1"
+    }, {
+        "name": "流水",
+        "value": "2"
+    }, {
+        "name": "人家",
+        "value": "3"
+    }]
+}, {
+    "name": "沙",
+    "code": "demo3",
+    "list": [{
+        "name": "古道",
+        "value": "1"
+    }, {
+        "name": "西风",
+        "value": "2"
+    }, {
+        "name": "瘦马",
+        "value": "3"
+    }]
+}, {
+    "name": "秋思",
+    "code": "demo4",
+    "list": [{
+        "name": "夕阳西下",
+        "value": "1"
+    }, {
+        "name": "断肠人",
+        "value": "2"
+    }, {
+        "name": "在天涯",
+        "value": "3"
+    }]
+}]
