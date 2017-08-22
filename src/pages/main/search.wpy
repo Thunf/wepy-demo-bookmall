@@ -9,6 +9,9 @@
     <block wx:if="{{items3}}">
       <checkboxButton3 :title.sync="title3" :list.sync="items3" :value.sync="value3"></checkboxButton3>
     </block>
+    <block wx:if="{{items4}}">
+      <checkboxButton4 :title.sync="title4" :list.sync="items4" :value.sync="value4"></checkboxButton4>
+    </block>
     <button @tap="search" class="weui-btn" type="primary">搜索</button>
   </view>
 </template>
@@ -29,15 +32,19 @@
       key1: '',
       key2: '',
       key3: '',
+      key4: '',
       title1: '',
       title2: '',
       title3: '',
+      title4: '',
       value1: '',
       value2: '',
       value3: '',
+      value4: '',
       items1: undefined,
       items2: undefined,
       items3: undefined,
+      items4: undefined,
       lists: [
         // {
         //   key: 'age',
@@ -107,7 +114,7 @@
     methods = {
       search() {
         const params = {title: []}
-        ;[1, 2, 3].map((i) => {
+        ;[1, 2, 3, 4].map((i) => {
           const items = `items${i}`
           const value = `value${i}`
           const key = `key${i}`
@@ -136,7 +143,8 @@
     components = {
       checkboxButton1: checkboxButton,
       checkboxButton2: checkboxButton,
-      checkboxButton3: checkboxButton
+      checkboxButton3: checkboxButton,
+      checkboxButton4: checkboxButton
     }
   }
 </script>
