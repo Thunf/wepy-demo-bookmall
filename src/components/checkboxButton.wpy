@@ -1,0 +1,160 @@
+<template>
+  <view class="checkbox-button">
+    <view wx:if="{{hasTitle}}" class="checkbox-title">{{title}}</view>
+    <checkbox-group style="margin-right: {{style_gutter_edge}}" @change="checkboxChange">
+      <view class="checkbox-wrapper" wx:for="{{list}}" wx:key="index" style="width:{{style_width}};padding-right: {{style_gutter}};margin-bottom: {{style_gutter}}">
+        <checkbox id="{{unique}}-{{index}}" hidden value="{{item.value}}" checked="{{item.checked}}"></checkbox>
+
+        <label for="{{unique}}-{{index}}" class="checkbox-item{{item.checked ? '-checked' : '' }}">
+          <text>{{item.name}}</text>
+        </label>
+
+      </view>
+    </checkbox-group>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import base from '../mixins/base.js'
+
+  export default class checkboxButton extends wepy.component {
+    mixins = [base]
+    props = {
+      list: {
+        twoWay: true,
+        type: Object,
+        default: []
+      },
+      value: {
+        twoWay: true,
+        type: [String, Number],
+        default: ''
+      },
+      col: {
+        type: [String, Number],
+        default: 4
+      },
+      gutter: {
+        type: [String, Number],
+        default: 16
+      },
+      unit: {
+        type: String,
+        default: 'rpx'
+      },
+      title: {
+        type: String,
+        default: ''
+      }
+    }
+
+    data = {
+      unique: Math.random().toString(36).substring(2)
+    }
+
+    onLoad() {
+      // 初始化已选项
+      const value = this.getString(this.value)
+      for (var i = 0; i < this.list.length; i++) {
+        if (this.isValueEqual(value, this.list[i].value)) {
+          this.list[i].checked = true
+        }
+      }
+    }
+
+    computed = {
+      hasTitle() {
+        return this.isDefined(this.title)
+      },
+      style_width() {
+        const col = this.col
+        return this.getPercent(1 / this.getNumber(col, 4))
+      },
+      style_gutter() {
+        const gutter = this.gutter
+        return this.getGutter(this.getNumber(gutter, 16), this.unit)
+      },
+      style_gutter_edge() {
+        const gutter = this.gutter
+        const col = this.getNumber(this.col, 4)
+        const edge = (col - 1) * this.getNumber(gutter, 16) / col
+        return this.getGutter(-edge, this.unit)
+      }
+    }
+
+    methods = {
+      checkboxChange(e) {
+        console.log('checkbox发生change事件，携带value值为：', e.detail.value)
+        var valueArr = e.detail.value
+        for (var i = 0; i < this.list.length; i++) {
+          if (this.isValueEqual(valueArr, this.list[i].value)) {
+            this.list[i].checked = true
+            this.value = valueArr
+          } else {
+            this.list[i].checked = false
+          }
+        }
+      }
+    }
+
+    isValueEqual(a, b) {
+      return this.getArray(a).indexOf(this.getString(b)) > -1
+    }
+
+    getPercent(num) {
+      return this.isNumber(num) ? `${num * 100}%` : '0%'
+    }
+    getGutter(num, unit) {
+      return this.isNumber(num) ? `${num}${unit || 'rpx'}` : '16rpx'
+    }
+  }
+</script>
+
+<style type="less">
+@import "../styles/custom/fn.less";
+
+.checkbox-button{
+  & + &{
+    margin-top: 40rpx;
+  }
+
+  &:last-of-type{
+    margin-bottom: 40rpx;
+  }
+
+  .checkbox-title {
+    .h4();
+    color: @weuiColorPrimary;
+    padding-bottom: 0.8em;
+  }
+
+  .checkbox-wrapper{
+    display: inline-block;
+    width: 25%;
+    box-sizing: border-box;
+  }
+
+  .checkbox-item,
+  .checkbox-item-checked{
+    display: block;
+    width: 100%;
+    padding: 0.5em 0;
+    line-height: 1;
+    .h4();
+    color: #999;
+    background: transparent;
+    border: 1rpx solid #ddd;
+    border-radius: 1em;
+    text-align: center;
+  }
+
+  .checkbox-item-checked{
+    color: #fff;
+    background: @weuiColorPrimary;
+    border-color: @weuiColorPrimary;
+  }
+}
+
+
+</style>
