@@ -9,7 +9,7 @@
     <block wx:if="{{items3}}">
       <checkboxButton3 :title.sync="title3" :list.sync="items3" :value.sync="value3"></checkboxButton3>
     </block>
-    <button @tap="search" class="weui-btn" type="primary">确认</button>
+    <button @tap="search" class="weui-btn" type="primary">搜索</button>
   </view>
 </template>
 
@@ -23,7 +23,7 @@
   export default class mainSearch extends wepy.page {
     mixins = [base, http]
     config = {
-      navigationBarTitleText: '借书'
+      navigationBarTitleText: '分类选择'
     }
     data = {
       key1: '',
@@ -48,15 +48,7 @@
         //     {name: 'yyy', value: '2'}
         //   ]
         // }
-      ],
-      exdata: [{
-        code: 'demo',
-        name: 'title',
-        list: [
-          {name: 'xxx', value: '1'},
-          {name: 'yyy', value: '2'}
-        ]
-      }]
+      ]
     }
 
     onReady() {
@@ -73,7 +65,15 @@
       // 获取tag列表
       this.$get({url: service.tags}, {
         success: ({code, data}) => {
-          const arr = this.getArray(data || this.exdata)
+          // data = [{
+          //   code: 'demo',
+          //   name: 'title',
+          //   list: [
+          //     {name: 'xxx', value: '1'},
+          //     {name: 'yyy', value: '2'}
+          //   ]
+          // }]
+          const arr = this.getArray(data)
           const lists = arr.map(({code, name, list}) => {
             return {
               key: code,
