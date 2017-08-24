@@ -65,6 +65,30 @@ export default class baseMixin extends wepy.mixin {
   }
 
   /**
+   * [JSON方法]
+   * @param  {[type]}  item [description]
+   * @return {Boolean}      [description]
+   */
+  $json(item) {
+    let str = {type: Object.prototype.toString.call(item)}
+    try {
+      str = JSON.stringify(item)
+    } catch (e) {
+      str.error = e && e.stack || ''
+    }
+    return this.isString(str) ? str : this.$json(str)
+  }
+  $parse(item) {
+    let obj = {type: Object.prototype.toString.call(item)}
+    try {
+      obj = JSON.parse(item)
+    } catch (e) {
+      obj.error = e && e.stack || ''
+    }
+    return this.isObject(obj) ? obj : this.$parse(obj)
+  }
+
+  /**
    * [功能方法]
    * @param  {[type]}  item [description]
    * @return {Boolean}      [description]
