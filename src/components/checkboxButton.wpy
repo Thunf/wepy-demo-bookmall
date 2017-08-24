@@ -4,11 +4,9 @@
     <checkbox-group style="margin-right: {{style_gutter_edge}}" @change="checkboxChange">
       <view class="checkbox-wrapper" wx:for="{{list}}" wx:key="index" style="width:{{style_width}};padding-right: {{style_gutter}};margin-bottom: {{style_gutter}}">
         <checkbox id="{{unique}}-{{index}}" hidden value="{{item.value}}" checked="{{item.checked}}"></checkbox>
-
         <label for="{{unique}}-{{index}}" class="checkbox-item{{item.checked ? '-checked' : '' }}">
           <text>{{item.name}}</text>
         </label>
-
       </view>
     </checkbox-group>
   </view>
@@ -28,7 +26,7 @@
       },
       value: {
         twoWay: true,
-        type: [String, Number],
+        type: [Array, String, Number],
         default: ''
       },
       col: {
@@ -54,13 +52,10 @@
     }
 
     onLoad() {
-      // 初始化已选项
-      const value = this.getString(this.value)
-      for (var i = 0; i < this.list.length; i++) {
-        if (this.isValueEqual(value, this.list[i].value)) {
-          this.list[i].checked = true
-        }
-      }
+      // 使组件在父组件之后lond
+      setTimeout(() => {
+        this.initCheckBox()
+      })
     }
 
     computed = {
@@ -85,7 +80,6 @@
 
     methods = {
       checkboxChange(e) {
-        console.log('checkbox发生change事件，携带value值为：', e.detail.value)
         var valueArr = e.detail.value
         for (var i = 0; i < this.list.length; i++) {
           if (this.isValueEqual(valueArr, this.list[i].value)) {
@@ -94,6 +88,16 @@
           } else {
             this.list[i].checked = false
           }
+        }
+      }
+    }
+
+    initCheckBox() {
+      // 初始化已选项
+      const value = this.getString(this.value)
+      for (var i = 0; i < this.list.length; i++) {
+        if (this.isValueEqual(value, this.list[i].value)) {
+          this.list[i].checked = true
         }
       }
     }

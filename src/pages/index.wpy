@@ -62,13 +62,24 @@
       // 请求列表
       this.$get({url: `${service.list}`}, {
         success: ({ data }) => {
+          // 处理轮播图
+          this.swipers.push({image: '../images/swiper.png'})
+          // 处理菜单栏
+          this.categorys.map((cate, index) => {
+            const xnum = Math.min(Math.max(index, 1), 3)
+            cate.url = `/pages/main/search?params=${this.$json({
+              value: [xnum, 4 - xnum].map(item => this.getString(item)),
+              index: index + 1,
+              title: cate.title
+            })}`
+          })
+          // 处理图书列表
           this.list = this.getArray(data).map((book, index) => {
             return {
               title: `Book ${index}`,
               content: book.title
             }
           })
-          this.swipers.push({image: '../images/swiper.png'})
         },
         fail: ({code, message}) => {
         }

@@ -58,6 +58,14 @@
       ]
     }
 
+    onLoad(query) {
+      const {index, value} = this.$parse(query && query.params)
+      if (index && value) {
+        // 多选时，预置对应value为对应数组
+        this[`value${index}`] = [...this.getArray(value, [this.getString(value, '1')])]
+      }
+    }
+
     onReady() {
       // 初始化页面数据
       this.initPageData()
@@ -81,14 +89,20 @@
           //   ]
           // }]
           const arr = this.getArray(data)
-          const lists = arr.map(({code, name, list}) => {
+          const lists = arr.map(({code, name, list}, i) => {
             return {
               key: code,
               title: name,
-              list: list && list.map((item) => {
+              list: list && list.map((item, index) => {
                 return {
                   name: item && item.name,
-                  value: item && item.value
+                  value: item && item.value,
+                  checked: (() => {
+                    // 由于组件内不方便实现检测list变化及时初始化预算项
+                    // 故在此hack，预处理checked属性
+                    const value = this[`value${i + 1}`]
+                    return value && value.indexOf ? value.indexOf(this.getString(index + 1)) > -1 : false
+                  })()
                 }
               })
             }
@@ -97,9 +111,8 @@
 
           for (var i = lists.length - 1; i >= 0; i--) {
             this[`key${i + 1}`] = lists[i].key
-            this[`title${i + 1}`] = lists[i].title
-            this[`value${i + 1}`] = lists[i].value
             this[`items${i + 1}`] = lists[i].list
+            this[`title${i + 1}`] = lists[i].title
           }
         },
         fail: ({code, data}) => {
@@ -119,12 +132,12 @@
           const value = `value${i}`
           const key = `key${i}`
           if (this[value] && this[key]) {
-            params[`${this[key]}_id`] = this.isArray(this[value]) ? this[value] : [this[value]]
+            params[`${this[key]}`] = this.isArray(this[value]) ? this[value] : [this[value]]
           }
           // 整理条件对应的文案信息
           if (this[items]) {
             const titleArr = this.getArray(this[items]).filter((item) => {
-              return this.getArray(params[`${this[key]}_id`]).indexOf(this.getString(item.value)) > -1
+              return this.getArray(params[`${this[key]}`]).indexOf(this.getString(item.value)) > -1
             }).map((item) => {
               return item.name
             })
