@@ -1,0 +1,271 @@
+<template>
+  <view class="booklist">
+    <view wx:if="{{title}}" class="booklist-name">{{title}}</view>
+    <block wx:if="{{list.length > 0}}">
+      <block wx:for="{{list}}" wx:key="index">
+        <navigator url="/pages/main/detail?id={{item.id}}" class="booklist-item clearfix">
+          <view class="booklist-cover-wrapper">
+            <image src="{{item.image}}" mode="widthFix" style="width:100%;" />
+          </view>
+          <view class="booklist-content-wrapper">
+            <view class="booklist-title">{{item.title}}</view>
+            <view class="booklist-abstract">{{item.content}}</view>
+            <view wx:if="{{isCollectList}}" class="booklist-tags">
+
+              <block wx:if="{{item.status == '1'}}">
+                <image src="{{icon_eye_active}}" class="imgicon" mode="aspectFit"/>
+                <text class="booklist-text color-blue">可借阅</text>
+              </block>
+              <block wx:else>
+                <image src="{{icon_eye}}" class="imgicon" mode="aspectFit"/>
+                <text class="booklist-text color-bbb">已借完</text>
+              </block>
+
+              <view @tap.stop="toStar({{item}}, {{index}})" class="booklist-status">
+                <block wx:if="{{item.collected == 1}}">
+                  <image class="imgicon" src="{{icon_star_active}}" mode="aspectFit"/>
+                  <text class="booklist-text reset-text-star color-999">已收藏</text>
+                </block><block wx:else>
+                  <image class="imgicon" src="{{icon_star}}" mode="aspectFit"/>
+                  <text class="booklist-text reset-text-star color-blue">收藏</text>
+                </block>
+              </view>
+
+            </view>
+            <view wx:else class="booklist-tags">
+              <block wx:for="{{item.tags}}" wx:key="index" wx:for-item="tag">
+                <view class="booklist-tag">{{tag}}</view>
+              </block>
+              <view class="booklist-status">
+                <block wx:if="{{item.status == '1'}}">
+                  <image src="{{icon_eye_active}}" class="imgicon" mode="aspectFit"/>
+                  <text class="booklist-text color-blue">可借阅</text>
+                </block>
+                <block wx:else>
+                  <image src="{{icon_eye}}" class="imgicon" mode="aspectFit"/>
+                  <text class="booklist-text color-bbb">已借完</text>
+                </block>
+              </view>
+            </view>
+          </view>
+        </navigator>
+      </block>
+      <block wx:if="{{loading}}">
+        <view class="weui-loadmore">
+          <view class="weui-loading"></view>
+          <view class="weui-loadmore__tips">正在加载</view>
+        </view>
+      </block>
+      <block wx:elif="{{noMore}}">
+        <view class="weui-loadmore weui-loadmore_line weui-loadmore_dot">
+          <view class="weui-loadmore__tips weui-loadmore__tips_in-line weui-loadmore__tips_in-dot"></view>
+        </view>
+      </block>
+    </block>
+    <block wx:else>
+      <view class="weui-loadmore weui-loadmore_line">
+        <view class="weui-loadmore__tips weui-loadmore__tips_in-line">暂无书籍</view>
+      </view>
+    </block>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import { service } from '../config.js'
+  import http from '../mixins/http'
+  import base from '../mixins/base'
+
+  export default class BookList extends wepy.component {
+    mixins = [base, http]
+    props = {
+      list: {
+        type: Object,
+        default: []
+      },
+      title: {
+        type: String,
+        default: null
+      },
+      loading: {
+        type: Boolean,
+        default: false
+      },
+      noMore: {
+        type: Boolean,
+        default: false
+      },
+      /**
+       * [type 列表类型：常规列表/收藏列表]
+       * @type {list/collect}
+       */
+      type: {
+        type: String,
+        default: 'list'
+      }
+    }
+
+    data = {
+      icon_eye: '/images/icon/icon-eye@2x.png',
+      icon_eye_active: '/images/icon/icon-eye-active@2x.png',
+      icon_star: '/images/icon/icon-star@2x.png',
+      icon_star_active: '/images/icon/icon-star-active@2x.png'
+    }
+
+    computed = {
+      isCollectList() {
+        return this.type === 'collect'
+      }
+    }
+
+    methods = {
+      toStar(book, index) {
+        // 将要发生的收藏动作
+        const isCollect = Boolean(book && +book.collected)
+        const newType = isCollect ? 0 : 1
+        const newTypeText = newType ? '添加' : '取消'
+        // 收藏本书
+        this.$post({
+          url: service.collect,
+          data: {
+            book_ids: [book.id],
+            type: newType
+          }
+        }, {
+          success: ({code, data}) => {
+            // 重置本书收藏状态
+            if (this.isObject(this.list[index])) {
+              this.list[index].collected = newType
+            }
+            wx.showToast({
+              title: `${newTypeText}收藏！`,
+              icon: 'success',
+              duration: 1000
+            })
+          },
+          fail: ({code, data}) => {
+            // =============================== 调试代码 ===============================
+            // this.book.collected = newType
+            // =============================== 调试代码 ===============================
+            wx.showToast({
+              title: `${newTypeText}收藏失败！`,
+              icon: 'loading',
+              image: '/images/icon/icon-cancel.png',
+              duration: 1000
+            })
+          }
+        })
+      }
+    }
+  }
+</script>
+
+<style type="less">
+@import "../styles/custom/fn.less";
+
+@bookListSpace: 18 * 2 * 0.8rpx;
+@bookListImageWidth: 25%;
+
+.booklist{
+  position: relative;
+  width: 100%;
+  font-size: 28rpx;
+  border-bottom: 20rpx solid transparent;
+  padding: 0 @bookListSpace;
+  padding-top: @bookListSpace;
+  box-sizing:border-box;
+  background: #fff;
+}
+.booklist-name{
+  position: relative;
+  height: 1em;
+  line-height: 1;
+  margin: 0 0 @bookListSpace -@bookListSpace;
+  padding-left: 0.8em;
+  color: @weuiColorPrimary;
+  font-size: 36rpx;
+
+  &:before{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 0.2em;
+    background: @weuiColorPrimary;
+  }
+}
+.booklist-item{
+  position: relative;
+  display: block;
+  margin: @bookListSpace 0;
+  padding-bottom: @bookListSpace;
+  border-bottom: 1rpx solid @uiBorderColor;
+  box-sizing: border-box;
+
+  &:last-child{
+    border: none;
+  }
+}
+.booklist-cover-wrapper{
+  width: @bookListImageWidth;
+  height: 0;
+  padding-bottom: @bookListImageWidth / 0.75;
+  overflow: hidden;
+  background: transparent no-repeat top left;
+  background-size: 100% auto;
+}
+.booklist-content-wrapper{
+  position: absolute;
+  top: 0;
+  left: @bookListImageWidth;
+  bottom: @bookListSpace;
+  width: 100% - @bookListImageWidth;
+  padding-left: @bookListSpace;
+  box-sizing: border-box;
+}
+.booklist-cover{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+}
+.booklist-title{
+  font-size: 40rpx;
+  color: #333;
+  .text-ellipsis();
+}
+.booklist-abstract{
+  color: #999;
+  .text-ellipsis-line(2);
+}
+.booklist-tags{
+  position: absolute;
+  left: @bookListSpace;
+  bottom: 0;
+  right: 0;
+}
+.booklist-tag{
+  display: inline-block;
+  padding:0 0.6em;
+  border-radius: 1em;
+  margin-right: 0.5em;
+  font-size: 90%;
+  color: #9B9B9B;
+  background: #F1F1F1;
+}
+.booklist-status{
+  position: relative;
+  display: inline-block;
+  float: right;
+
+  .reset-text-star{
+    vertical-align: text-top;
+  }
+
+}
+.booklist-text{
+  padding-left: 0.3em;
+}
+</style>
