@@ -3,10 +3,8 @@
     <SearchBar :placeholder="searchText"></SearchBar>
     <Swiper :list.sync="swipers" height="280"></Swiper>
     <Category :list.sync="categorys" col="4"></Category>
-
-    <block wx:for="{{list}}" wx:for-item="book" wx:key="index">
-      <view>{{index+1}}.{{book.title}}: {{book.content}}</view>
-    </block>
+    <BookList :list.sync="list" title="图书列表"
+     :loading.sync="loading" :noMore.sync="noMoreList"></BookList>
   </view>
 </template>
 
@@ -18,6 +16,19 @@
   import Swiper from '../components/swiper'
   import SearchBar from '../components/searchbar'
   import Category from '../components/category'
+  import BookList from '../components/bookList'
+
+  // 示例放置图片组
+  const funImages = [
+    '/images/category/cate-da@2x.png',
+    '/images/category/cate-ji@2x.png',
+    '/images/category/cate-da@2x.png',
+    '/images/category/cate-li@2x.png',
+    '/images/icon/icon-jin@2x.png',
+    '/images/icon/icon-wan@2x.png',
+    '/images/icon/icon-chi@2x.png',
+    '/images/icon/icon-ji@2x.png'
+  ]
 
   export default class Index extends wepy.page {
     mixins = [base, http]
@@ -30,14 +41,17 @@
       searchText: 'book',
       swipers: [
         // 占位图，防止请求错误无图显示
-        {image: '../images/swiper.png', url: '/pages/main/search'}
+        {image: '/images/swiper.png', url: '/pages/main/search'}
       ],
       categorys: [
-        {title: '今', image: '../images/category/cate-da@2x.png'},
-        {title: '晚', image: '../images/category/cate-ji@2x.png'},
-        {title: '吃', image: '../images/category/cate-da@2x.png'},
-        {title: '鸡', image: '../images/category/cate-li@2x.png'}
+        {title: '今', image: funImages[0]},
+        {title: '晚', image: funImages[1]},
+        {title: '吃', image: funImages[2]},
+        {title: '鸡', image: funImages[3]}
       ],
+
+      noMoreList: false,
+      loading: false,
       list: [],
       page: 0,
       size: 5
@@ -52,6 +66,10 @@
     }
 
     onReachBottom() {
+      setTimeout(() => {
+        this.updateBookList(this.page)
+        this.$apply()
+      }, 200)
     }
 
     // 初始化页面数据
@@ -60,28 +78,80 @@
       this.page = 0
 
       // 请求列表
-      this.$get({url: `${service.list}`}, {
-        success: ({ data }) => {
-          // 处理轮播图
-          this.swipers.push({image: '../images/swiper.png'})
-          // 处理菜单栏
-          this.categorys.map((cate, index) => {
-            const xnum = Math.min(Math.max(index, 1), 3)
-            cate.url = `/pages/main/search?params=${this.$json({
-              value: [xnum, 4 - xnum].map(item => this.getString(item)),
-              index: index + 1,
-              title: cate.title
-            })}`
-          })
-          // 处理图书列表
-          this.list = this.getArray(data).map((book, index) => {
-            return {
-              title: `Book ${index}`,
-              content: book.title
-            }
-          })
+      this.updateBookList(this.page)
+
+      // 处理轮播图
+      this.swipers.push({image: '/images/swiper.png'})
+      // 处理菜单栏
+      this.categorys.map((cate, index) => {
+        const xnum = Math.min(Math.max(index, 1), 3)
+        cate.url = `/pages/main/search?params=${this.$json({
+          value: [xnum, 4 - xnum].map(item => this.getString(item)),
+          index: index + 1,
+          title: cate.title
+        })}`
+      })
+    }
+
+    // 更新图书列表
+    updateBookList(page) {
+      if (this.loading || this.noMoreList) return
+      this.loading = true
+      // 请求列表
+      this.$post({
+        url: service.list,
+        data: {
+          // 默认从0开始为第一页
+          page: page,
+          size: this.size
+        }
+      }, {
+        success: ({code, data}) => {
+          // 示例规则：最多20本
+          if (this.list.length >= 20) {
+            this.noMoreList = true
+            return
+          }
+
+          // 请求到空列表后就认为没有更多了
+          if (this.isArray(data) && data.length === 0) {
+            this.noMoreList = true
+            return
+          }
+          if (!this.page || +this.page === 0) {
+            this.list = this.getBooks(data)
+          } else {
+            // 添加到列表中
+            this.list = [
+              ...this.list,
+              ...this.getBooks(data)
+            ]
+          }
+          // 成功了就增加一页
+          this.page += 1
         },
-        fail: ({code, message}) => {
+        fail: ({code, data}) => {
+          // 失败了什么也不做
+        },
+        complete: () => {
+          this.loading = false
+        }
+      })
+    }
+
+    // 处理图书列表
+    getBooks(data) {
+      const len = this.list.length
+      return this.getArray(data).map((book, index) => {
+        const xlen = len + index
+        // 拼接示例数据
+        return {
+          id: xlen,
+          title: book.title,
+          content: `简介: 大吉大利，今晚吃鸡。${book.title}；${book.title}。`,
+          image: funImages[(xlen + 4) % 8],
+          tags: ['tag1', 'tag2'],
+          status: xlen % 2
         }
       })
     }
@@ -92,6 +162,7 @@
     components = {
       SearchBar,
       Category,
+      BookList,
       Swiper
     }
   }
