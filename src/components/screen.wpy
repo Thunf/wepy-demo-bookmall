@@ -1,0 +1,41 @@
+<template>
+  <view class="screen-placeholder clearfix">
+    <slot name="placeholder"></slot>
+  </view>
+  <view class="screen-wrapper" style="{{style_position}}:0;">
+    <slot></slot>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import base from '../mixins/base.js'
+
+  export default class Screen extends wepy.component {
+    mixins = [base]
+    props = {
+      position: {
+        type: String,
+        default: 'bottom'
+      }
+    }
+
+    computed = {
+      style_position() {
+        return ['bottom', 'top'].indexOf(this.position) > -1 ? this.position : 'bottom'
+      }
+    }
+  }
+</script>
+
+<style type="less">
+.screen-placeholder{
+  opacity: 0;
+  pointer-events: none;
+}
+.screen-wrapper{
+  position: fixed;
+  left: 0;
+  right: 0;
+}
+</style>
