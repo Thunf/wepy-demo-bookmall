@@ -27,7 +27,7 @@
           <view class="detail-desc-title">简介：</view>
           <view class="detail-desc">
             <block wx:for="{{description}}" wx:key="index" wx:for-item="desc">
-              <view class="detail-text" wx:if="{{desc.type === 'adword'}}">{{desc.value}}</view>
+              <view class="detail-text" wx:if="{{desc.type === 'text'}}">{{desc.value}}</view>
               <image wx:elif="{{desc.type === 'image'}}" class="detail-image"
                src="{{desc.value || ''}}" mode="widthFix"/>
             </block>
@@ -52,7 +52,7 @@
         </button>
         <button @tap="toAdd" disabled="{{!isEnabled}}" class="weui-btn btn-block btn-flex-full" type="primary">
           <text wx:if="{{!isEnabled}}">已借完</text>
-          <text wx:elif="{{book.hasExist}}">已添加，查看书架</text>
+          <text wx:elif="{{book.exist}}">已添加，查看书架</text>
           <text wx:else>借阅</text>
         </button>
       </view>
@@ -64,15 +64,26 @@
 
 <script>
   import wepy from 'wepy'
-  import { service } from '../../config.js'
+  // import { service } from '../../config.js'
   import http from '../../mixins/http'
   import base from '../../mixins/base'
-  import cart from '../../mixins/cart'
   import Swiper from '../../components/swiper'
   import Screen from '../../components/screen'
 
+  // 示例放置图片组
+  const funImages = [
+    '/images/category/cate-da@2x.png',
+    '/images/category/cate-ji@2x.png',
+    '/images/category/cate-da@2x.png',
+    '/images/category/cate-li@2x.png',
+    '/images/category/cate-jin@2x.png',
+    '/images/category/cate-wan@2x.png',
+    '/images/category/cate-chi@2x.png',
+    '/images/category/cate-jii@2x.png'
+  ]
+
   export default class mainDetail extends wepy.page {
-    mixins = [base, cart, http]
+    mixins = [base, http]
     config = {
       navigationBarTitleText: '图书详情'
     }
@@ -82,33 +93,44 @@
       icon_shelf: '/images/tabbars/icon-shelf@2x.png',
       navigate: false,
       book: {
-        id: '',
-        name: '书名',
-        author: '作者',
-        tags: ['标签'],
-        pubtime: '出版日期',
-        pubcompany: '出版社',
+        id: '1825',
+        name: '假如生活欺骗了你',
+        author: '普希金',
+        tags: ['诗歌', '普希金'],
+        pubtime: '1825年',
+        pubcompany: '俄国',
         image: '',
-        images: [],
-        stock: 0,
-        desc: [{
-          type: 'adword',
-          value: '暂无图书简介'
-        }]
+        images: funImages,
+        stock: 1,
+        exist: 0,
+        desc: [
+          {type: 'text', value: '示例tip：下拉本页，随机改变状态~'},
+          {type: 'image', value: '/images/swiper.png'},
+          {type: 'text', value: '假如生活欺骗了你，'},
+          {type: 'text', value: '不要悲伤，不要心急！'},
+          {type: 'text', value: '忧郁的日子里须要镇静：'},
+          {type: 'text', value: '相信吧，快乐的日子将会来临！'},
+          {type: 'text', value: '心儿永远向往着未来；'},
+          {type: 'text', value: '现在却常是忧郁。'},
+          {type: 'text', value: '一切都是瞬息，一切都将会过去；'},
+          {type: 'text', value: '而那过去了的，就会成为亲切的怀恋。'}
+        ]
       },
-      banners: []
+      banners: funImages.slice().map(item => {
+        return { image: item }
+      })
     }
 
     computed = {
       description() {
         const desc = this.book && this.book.desc
         return desc || [{
-          type: 'adword',
+          type: 'text',
           value: '暂无图书简介'
         }]
       },
       isCollect() {
-        return Boolean(this.book && +this.book.is_collect)
+        return Boolean(this.book && +this.book.collected)
       },
       isEnabled() {
         return Boolean(this.book && +this.book.stock > 0)
@@ -131,45 +153,27 @@
 
     // 初始化页面数据
     initPageData() {
+      const noPay = Boolean('==== 没有套餐 ====')
+      if (noPay) {
+        // return wx.navigateTo({url: '/pages/main/subscribe'})
+      }
       // 请求图书详情
       this.getDetail()
     }
 
     // 获取图书信息
     getDetail() {
-      this.$get({url: `${service.detail}?id=${this.id}`}, {
-        success: ({code, data}) => {
-          const book = this.getObject(data)
-          // 获取书架状态，优化本页交互
-          const cartIds = this.getCartList().filter(({good}) => good).map(({good}) => this.getString(good.id))
-          // 标识本商品已存在书架中
-          if (cartIds.indexOf(this.getString(book.id)) > -1) {
-            book.hasExist = 1
-          }
-          this.book = book
+      // 根据业务接口处理数据
+      // this.$get({url: `${service.detail}?id=${this.id}`}, {
+      //   success: ({code, data}) => {},
+      //   fail: ({code, data}) => {}
+      // })
 
-          // 如果有图片组，就给图片组
-          if (book &&
-              book.images &&
-              book.images.length &&
-              book.images[0].image) {
-            this.banners = book.images
-          }
-        },
-        fail: ({code, data}) => {
-          // 失败了
-          wx.showToast({
-            title: '加载中...',
-            icon: 'loading',
-            duration: 10000
-          })
-          // setTimeout(() => {
-          //   // 10秒后重新请求
-          //   wx.hideToast()
-          //   this.initPageData()
-          // }, 10000)
-        }
-      })
+      // ===== 以下随机示例：借完 -> 已加 -> 可借 -> 借完~ =====
+      const stock = this.book.stock
+      const exist = this.book.exist
+      this.book.stock = exist
+      this.book.exist = (stock + exist) % 2
     }
 
     methods = {
@@ -177,34 +181,20 @@
         // 将要发生的收藏动作
         const newType = this.isCollect ? 0 : 1
         const newTypeText = newType ? '添加' : '取消'
-        // 收藏本书
-        this.$post({
-          url: service.collect,
-          data: {
-            book_ids: [this.id],
-            type: newType
-          }
-        }, {
-          success: ({code, data}) => {
-            // 重置本书收藏状态
-            this.book.is_collect = newType
-            wx.showToast({
-              title: `${newTypeText}收藏！`,
-              icon: 'success',
-              duration: 1000
-            })
-          },
-          fail: ({code, data}) => {
-            // =============================== 调试代码 ===============================
-            // this.book.is_collect = newType
-            // =============================== 调试代码 ===============================
-            wx.showToast({
-              title: `${newTypeText}收藏失败！`,
-              icon: 'loading',
-              image: '/images/icon/icon-cancel.png',
-              duration: 1000
-            })
-          }
+
+        // 根据业务接口处理数据
+        // this.$post({url: service.collect, data: {}}, {
+        //   success: ({code, data}) => {},
+        //   fail: ({code, data}) => {}
+        // })
+
+        // ===== 以下随机示例 =====
+        // 重置本书收藏状态
+        this.book.collected = newType
+        wx.showToast({
+          title: `${newTypeText}收藏！`,
+          icon: 'success',
+          duration: 1000
         })
       },
       toBorrow() {
@@ -212,66 +202,24 @@
         wx.switchTab({url: '/pages/main/borrow'})
       },
       toAdd() {
-        const book = this.book
-        if (!this.getString(book.id) || !this.getString(book.name)) {
-          this.$alert('借阅失败', '图书信息有误，暂时无法借阅')
-          return
+        // 根据业务接口处理数据
+        // 本书是否已存在
+        const exist = this.getObject(this.book).exist
+
+        // ===== 以下随机示例 =====
+        if (exist) {
+          // 存在本书时，引导查看书架
+          this.methods.toBorrow()
+        } else {
+          // 不存在本书时，添加成功提示
+          wx.showToast({
+            title: '添加到书架成功！',
+            icon: 'success',
+            duration: 1000
+          })
+          // 临时打标
+          this.book.exist = true
         }
-        this.addCart({
-          id: book.id,
-          name: book.name,
-          author: book.author
-        }, ({code, message}) => {
-          console.log(code, message)
-          // 本书是否已存在
-          const hasExist = this.book && this.book.hasExist
-          // 匹配加车状态
-          switch (+code) {
-            // 成功
-            case 0: {
-              if (hasExist) {
-                // 存在本书时，引导查看书架
-                wx.switchTab({url: '/pages/main/borrow'})
-              } else {
-                // 不存在本书时，添加成功提示
-                wx.showToast({
-                  title: '添加到书架成功！',
-                  icon: 'success',
-                  duration: 1000
-                })
-                // 临时打标
-                this.book.hasExist = true
-              }
-              break
-            }
-            // 超出书架可添加的最大值
-            case 1001: {
-              if (message && !hasExist) {
-                // 不存在本书时，提示去书架删减其他书
-                this.$retry('温馨提示', message, () => {
-                  // 用户点击确定
-                  wx.switchTab({url: '/pages/main/borrow'})
-                }, () => {
-                  // 取消不处理
-                })
-              } else {
-                // 存在本书时，直接引导查看书架
-                wx.switchTab({url: '/pages/main/borrow'})
-              }
-              break
-            }
-            case 4001: ;
-            case 9002: {
-              // 去购买套餐
-              wx.navigateTo({url: '/pages/main/subscribe'})
-              break
-            }
-            default: {
-              // 加车失败，提示
-              this.$alert('异常提示', '暂时无法借阅')
-            }
-          }
-        })
       }
     }
 
@@ -317,7 +265,7 @@
     line-height: 1.5;
   }
   .detail-text{
-    text-indent: 2em;
+    // text-indent: 2em;
     & + .detail-image{
       margin-top: 0.5em;
     }
@@ -325,6 +273,9 @@
   .detail-image{
     width:100%;
     // margin: 0.5em 0;
+    & + .detail-text{
+      margin-top: 0.5em;
+    }
   }
 
   .btn-flex-1{
