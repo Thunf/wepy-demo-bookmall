@@ -7,7 +7,8 @@ export default class extends wepy.app {
   config = {
     pages: [
       'pages/index',
-      'pages/main/search'
+      'pages/main/search',
+      'pages/main/detail'
     ],
     window: {
       navigationBarTitleText: 'BookMall',
