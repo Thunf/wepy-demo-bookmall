@@ -1,0 +1,346 @@
+<template>
+  <view class="main-detail">
+    <view class="weui-panel">
+      <block wx:if="{{banners && banners.length}}">
+        <view class="detail-cover">
+          <Swiper :list.sync="banners" height="400" :navigate="navigate"></Swiper>
+        </view>
+      </block>
+      <block wx:else>
+        <image src="{{book.image || ''}}" class="detail-cover" mode="aspectFit"/>
+      </block>
+      <view class="weui-media-box weui-media-box_text weui-cells_in-small-appmsg">
+        <view class="h3 color-333">{{book.name}}</view>
+        <view class="detail-info">
+          <view>作者：{{book.author}}</view>
+          <view>出版社：{{book.pubcompany}}</view>
+          <view>出版时间：{{book.pubtime}}</view>
+        </view>
+        <view class="detail-tags">
+          <text wx:for="{{book.tags}}" wx:key="index" wx:for-item="tag" class="tag">{{tag}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="weui-panel">
+      <view class="weui-media-box weui-media-box_text">
+          <view class="detail-desc-title">简介：</view>
+          <view class="detail-desc">
+            <block wx:for="{{description}}" wx:key="index" wx:for-item="desc">
+              <view class="detail-text" wx:if="{{desc.type === 'adword'}}">{{desc.value}}</view>
+              <image wx:elif="{{desc.type === 'image'}}" class="detail-image"
+               src="{{desc.value || ''}}" mode="widthFix"/>
+            </block>
+          </view>
+      </view>
+    </view>
+
+    <Screen class="fixed-bottom">
+      <view style="display: flex;">
+        <button @tap="toStar" class="weui-btn btn-block btn-flex-1">
+          <block wx:if="{{isCollect}}">
+            <image class="imgicon" src="{{icon_star_active}}" mode="aspectFit"/>
+            <view class="btn-text-bottom color-999">已收藏</view>
+          </block><block wx:else>
+            <image class="imgicon" src="{{icon_star}}" mode="aspectFit"/>
+            <view class="btn-text-bottom">收藏</view>
+          </block>
+        </button>
+        <button @tap="toBorrow" class="weui-btn btn-block btn-flex-1">
+          <image class="imgicon" src="{{icon_shelf}}" mode="aspectFit"/>
+          <view class="btn-text-bottom">借书架</view>
+        </button>
+        <button @tap="toAdd" disabled="{{!isEnabled}}" class="weui-btn btn-block btn-flex-full" type="primary">
+          <text wx:if="{{!isEnabled}}">已借完</text>
+          <text wx:elif="{{book.hasExist}}">已添加，查看书架</text>
+          <text wx:else>借阅</text>
+        </button>
+      </view>
+      <button slot="placeholder" class="weui-btn btn-block" type="primary">借阅</button>
+    </Screen>
+
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import { service } from '../../config.js'
+  import http from '../../mixins/http'
+  import base from '../../mixins/base'
+  import cart from '../../mixins/cart'
+  import Swiper from '../../components/swiper'
+  import Screen from '../../components/screen'
+
+  export default class mainDetail extends wepy.page {
+    mixins = [base, cart, http]
+    config = {
+      navigationBarTitleText: '图书详情'
+    }
+    data = {
+      icon_star: '/images/icon/icon-star@2x.png',
+      icon_star_active: '/images/icon/icon-star-active@2x.png',
+      icon_shelf: '/images/tabbars/icon-shelf@2x.png',
+      navigate: false,
+      book: {
+        id: '',
+        name: '书名',
+        author: '作者',
+        tags: ['标签'],
+        pubtime: '出版日期',
+        pubcompany: '出版社',
+        image: '',
+        images: [],
+        stock: 0,
+        desc: [{
+          type: 'adword',
+          value: '暂无图书简介'
+        }]
+      },
+      banners: []
+    }
+
+    computed = {
+      description() {
+        const desc = this.book && this.book.desc
+        return desc || [{
+          type: 'adword',
+          value: '暂无图书简介'
+        }]
+      },
+      isCollect() {
+        return Boolean(this.book && +this.book.is_collect)
+      },
+      isEnabled() {
+        return Boolean(this.book && +this.book.stock > 0)
+      }
+    }
+
+    onLoad(query) {
+      const id = query && +query.id
+      this.id = id || this.id || 0
+    }
+
+    onShow() {
+      // 初始化页面数据
+      this.initPageData()
+    }
+
+    onPullDownRefresh() {
+      this.initPageData()
+    }
+
+    // 初始化页面数据
+    initPageData() {
+      // 请求图书详情
+      this.getDetail()
+    }
+
+    // 获取图书信息
+    getDetail() {
+      this.$get({url: `${service.detail}?id=${this.id}`}, {
+        success: ({code, data}) => {
+          const book = this.getObject(data)
+          // 获取书架状态，优化本页交互
+          const cartIds = this.getCartList().filter(({good}) => good).map(({good}) => this.getString(good.id))
+          // 标识本商品已存在书架中
+          if (cartIds.indexOf(this.getString(book.id)) > -1) {
+            book.hasExist = 1
+          }
+          this.book = book
+
+          // 如果有图片组，就给图片组
+          if (book &&
+              book.images &&
+              book.images.length &&
+              book.images[0].image) {
+            this.banners = book.images
+          }
+        },
+        fail: ({code, data}) => {
+          // 失败了
+          wx.showToast({
+            title: '加载中...',
+            icon: 'loading',
+            duration: 10000
+          })
+          // setTimeout(() => {
+          //   // 10秒后重新请求
+          //   wx.hideToast()
+          //   this.initPageData()
+          // }, 10000)
+        }
+      })
+    }
+
+    methods = {
+      toStar() {
+        // 将要发生的收藏动作
+        const newType = this.isCollect ? 0 : 1
+        const newTypeText = newType ? '添加' : '取消'
+        // 收藏本书
+        this.$post({
+          url: service.collect,
+          data: {
+            book_ids: [this.id],
+            type: newType
+          }
+        }, {
+          success: ({code, data}) => {
+            // 重置本书收藏状态
+            this.book.is_collect = newType
+            wx.showToast({
+              title: `${newTypeText}收藏！`,
+              icon: 'success',
+              duration: 1000
+            })
+          },
+          fail: ({code, data}) => {
+            // =============================== 调试代码 ===============================
+            // this.book.is_collect = newType
+            // =============================== 调试代码 ===============================
+            wx.showToast({
+              title: `${newTypeText}收藏失败！`,
+              icon: 'loading',
+              image: '/images/icon/icon-cancel.png',
+              duration: 1000
+            })
+          }
+        })
+      },
+      toBorrow() {
+        // 查看书架
+        wx.switchTab({url: '/pages/main/borrow'})
+      },
+      toAdd() {
+        const book = this.book
+        if (!this.getString(book.id) || !this.getString(book.name)) {
+          this.$alert('借阅失败', '图书信息有误，暂时无法借阅')
+          return
+        }
+        this.addCart({
+          id: book.id,
+          name: book.name,
+          author: book.author
+        }, ({code, message}) => {
+          console.log(code, message)
+          // 本书是否已存在
+          const hasExist = this.book && this.book.hasExist
+          // 匹配加车状态
+          switch (+code) {
+            // 成功
+            case 0: {
+              if (hasExist) {
+                // 存在本书时，引导查看书架
+                wx.switchTab({url: '/pages/main/borrow'})
+              } else {
+                // 不存在本书时，添加成功提示
+                wx.showToast({
+                  title: '添加到书架成功！',
+                  icon: 'success',
+                  duration: 1000
+                })
+                // 临时打标
+                this.book.hasExist = true
+              }
+              break
+            }
+            // 超出书架可添加的最大值
+            case 1001: {
+              if (message && !hasExist) {
+                // 不存在本书时，提示去书架删减其他书
+                this.$retry('温馨提示', message, () => {
+                  // 用户点击确定
+                  wx.switchTab({url: '/pages/main/borrow'})
+                }, () => {
+                  // 取消不处理
+                })
+              } else {
+                // 存在本书时，直接引导查看书架
+                wx.switchTab({url: '/pages/main/borrow'})
+              }
+              break
+            }
+            case 4001: ;
+            case 9002: {
+              // 去购买套餐
+              wx.navigateTo({url: '/pages/main/subscribe'})
+              break
+            }
+            default: {
+              // 加车失败，提示
+              this.$alert('异常提示', '暂时无法借阅')
+            }
+          }
+        })
+      }
+    }
+
+    components = {
+      Swiper,
+      Screen
+    }
+  }
+</script>
+
+<style lang="less">
+@import "../../styles/custom/fn.less";
+
+.main-detail{
+
+  .detail-cover{
+    display: block;
+    margin: 40rpx auto 0;
+  }
+  .detail-tags{
+    .h4();
+    padding: 0.4em 0;
+  }
+
+  .detail-desc-title{
+    .h4();
+    color: #ccc;
+    // margin-bottom: 0.5em;
+  }
+  .detail-info,
+  .detail-desc{
+    color: #aaa;
+    font-size: 12px;
+    line-height: 1;
+    // line-height: 0;
+    padding: 0.5em 0;
+    overflow: hidden;
+    text-align: center;
+  }
+  .detail-info,
+  .detail-text{
+    text-align: left;
+    line-height: 1.5;
+  }
+  .detail-text{
+    text-indent: 2em;
+    & + .detail-image{
+      margin-top: 0.5em;
+    }
+  }
+  .detail-image{
+    width:100%;
+    // margin: 0.5em 0;
+  }
+
+  .btn-flex-1{
+    padding: 0;
+    width: 3.5em;
+    line-height: 1.6;
+    overflow: hidden;
+  }
+  .btn-flex-full{
+    flex: 1 1 auto;
+  }
+  .btn-text-bottom{
+    .h5();
+    line-height: 1;
+    color: #777;
+  }
+
+}
+</style>
