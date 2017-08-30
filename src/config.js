@@ -11,6 +11,9 @@ export const service = {
   // 列表接口 GET
   list: `${host}/bookmall/list`,
 
+  // 列表接口 GET
+  detail: `${host}/bookmall/list`,
+
   // 筛选页接口 GET 
   tags: `${host}/bookmall/tags`,
 
