@@ -24,10 +24,10 @@
     '/images/category/cate-ji@2x.png',
     '/images/category/cate-da@2x.png',
     '/images/category/cate-li@2x.png',
-    '/images/icon/icon-jin@2x.png',
-    '/images/icon/icon-wan@2x.png',
-    '/images/icon/icon-chi@2x.png',
-    '/images/icon/icon-ji@2x.png'
+    '/images/category/cate-jin@2x.png',
+    '/images/category/cate-wan@2x.png',
+    '/images/category/cate-chi@2x.png',
+    '/images/category/cate-jii@2x.png'
   ]
 
   export default class Index extends wepy.page {
