@@ -8,6 +8,7 @@ export default class extends wepy.app {
     pages: [
       'pages/index',
       'pages/main/search',
+      'pages/main/list',
       'pages/main/detail'
     ],
     window: {
