@@ -13,22 +13,11 @@
   import { service } from '../config.js'
   import base from '../mixins/base'
   import http from '../mixins/http'
+  import { funImages } from '../mixins/demo'
   import Swiper from '../components/swiper'
   import SearchBar from '../components/searchbar'
   import Category from '../components/category'
   import BookList from '../components/bookList'
-
-  // 示例放置图片组
-  const funImages = [
-    '/images/category/cate-da@2x.png',
-    '/images/category/cate-ji@2x.png',
-    '/images/category/cate-da@2x.png',
-    '/images/category/cate-li@2x.png',
-    '/images/category/cate-jin@2x.png',
-    '/images/category/cate-wan@2x.png',
-    '/images/category/cate-chi@2x.png',
-    '/images/category/cate-jii@2x.png'
-  ]
 
   export default class Index extends wepy.page {
     mixins = [base, http]

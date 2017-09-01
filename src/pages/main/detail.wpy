@@ -48,7 +48,7 @@
         </button>
         <button @tap="toBorrow" class="weui-btn btn-block btn-flex-1">
           <image class="imgicon" src="{{icon_shelf}}" mode="aspectFit"/>
-          <view class="btn-text-bottom">借书架</view>
+          <view class="btn-text-bottom">书架</view>
         </button>
         <button @tap="toAdd" disabled="{{!isEnabled}}" class="weui-btn btn-block btn-flex-full" type="primary">
           <text wx:if="{{!isEnabled}}">已借完</text>
@@ -67,20 +67,9 @@
   // import { service } from '../../config.js'
   import http from '../../mixins/http'
   import base from '../../mixins/base'
+  import { funImages } from '../../mixins/demo'
   import Swiper from '../../components/swiper'
   import Screen from '../../components/screen'
-
-  // 示例放置图片组
-  const funImages = [
-    '/images/category/cate-da@2x.png',
-    '/images/category/cate-ji@2x.png',
-    '/images/category/cate-da@2x.png',
-    '/images/category/cate-li@2x.png',
-    '/images/category/cate-jin@2x.png',
-    '/images/category/cate-wan@2x.png',
-    '/images/category/cate-chi@2x.png',
-    '/images/category/cate-jii@2x.png'
-  ]
 
   export default class mainDetail extends wepy.page {
     mixins = [base, http]
