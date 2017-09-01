@@ -1,0 +1,175 @@
+<template>
+  <view class="main-list">
+    <view class="main-list-title clearfix" wx:if="{{keywords && keywords.length}}">
+      <view class="pull-left width-8p">
+        <block wx:for="{{keywords}}" wx:key="index">
+          <text wx:if="{{index > 0}}">，</text>
+          <text>{{item}}</text>
+        </block>
+      </view>
+      <text @tap="clearSearch" class="link link-blue pull-right">清空筛选</text>
+    </view>
+    <BookList :list.sync="list" :loading.sync="loading" :noMore.sync="noMoreList"></BookList>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import { service } from '../../config.js'
+  import base from '../../mixins/base'
+  import http from '../../mixins/http'
+  import { funImages } from '../../mixins/demo'
+  import BookList from '../../components/bookList'
+
+  export default class mainList extends wepy.page {
+    mixins = [base, http]
+    config = {
+      navigationBarTitleText: '找书'
+    }
+    data = {
+      params: {},
+
+      noMoreList: false,
+      loading: false,
+      list: [],
+      page: 0,
+      size: 5
+    }
+
+    onLoad(query) {
+      let params = query && query.params
+      try {
+        params = JSON.parse(params)
+      } catch (e) {
+        params = {}
+      }
+      this.params = params
+    }
+
+    onReady() {
+      this.initPageData(this.page)
+    }
+
+    onPullDownRefresh() {
+      this.initPageData()
+    }
+
+    onReachBottom() {
+      setTimeout(() => {
+        this.updateBookList(this.page)
+        this.$apply()
+      }, 200)
+    }
+
+    methods = {
+      clearSearch() {
+        // 清空参数
+        this.params = {}
+        // 初始化页面
+        this.initPageData()
+      }
+    }
+
+    computed = {
+      keywords() {
+        const title = this.params && this.params.title
+        const words = this.params && this.params.key_word
+        const keywords = this.getString(words || title).split(/\s+/g)
+        return keywords.filter((item) => item) || []
+      }
+    }
+
+    // 初始化页面数据
+    initPageData() {
+      // 初始化参数
+      this.page = 0
+      this.loading = false
+      this.noMoreList = false
+
+      // 请求推荐列表
+      this.updateBookList(this.page)
+    }
+
+    // 更新图书列表
+    updateBookList(page) {
+      if (this.loading || this.noMoreList) return
+      this.loading = true
+      // 推荐列表
+      this.$post({
+        url: service.list,
+        data: Object.assign({}, this.getObject(this.params), {
+          // 默认从0开始为第一页
+          page: page,
+          size: this.size
+        })
+      }, {
+        success: ({code, data}) => {
+          // 示例规则：最多20本
+          if (this.list.length >= 20) {
+            this.noMoreList = true
+            return
+          }
+
+          // 请求到空列表后就认为没有更多了
+          if (this.isArray(data) && data.length === 0) {
+            this.noMoreList = true
+          }
+          if (!this.page || +this.page === 0) {
+            this.list = this.getBooks(data)
+          } else {
+            // 添加到列表中
+            this.list = [
+              ...this.list,
+              ...this.getBooks(data)
+            ]
+          }
+          // 成功了就增加一页
+          this.page += 1
+        },
+        fail: ({code, data}) => {
+          console.log('[updateBookList fail]', code, data)
+        },
+        complete: () => {
+          this.loading = false
+        }
+      })
+    }
+
+    // 处理图书列表
+    getBooks(data) {
+      const len = this.list.length
+      return this.getArray(data).map((book, index) => {
+        const xlen = len + index
+        // 拼接示例数据
+        return {
+          id: xlen,
+          title: book.title,
+          content: `简介: 大吉大利，今晚吃鸡。${book.title}；${book.title}。`,
+          image: funImages[(xlen + 4) % 8],
+          tags: ['tag1', 'tag2'],
+          status: xlen % 2
+        }
+      })
+    }
+
+    components = {
+      BookList
+    }
+  }
+</script>
+
+<style lang="less">
+@import "../../styles/weui/base/fn.wxss";
+
+.main-list{
+  .width-8p{
+    width: 80% !important;
+  }
+
+  .main-list-title {
+    padding: 1em @weuiCellGapH;
+    color: @weuiTextColorGray;
+    font-size: @weuiCellTipsFontSize;
+  }
+}
+</style>
