@@ -5,9 +5,9 @@
 
 <script>
   import wepy from 'wepy'
-  // import { service } from '../../config.js'
-  import http from '../../mixins/http'
-  import base from '../../mixins/base'
+  // import { service } from '../config.js'
+  import http from '../mixins/http'
+  import base from '../mixins/base'
 
   export default class mainBorrow extends wepy.page {
     mixins = [base, http]
@@ -44,7 +44,7 @@
 </script>
 
 <style lang="less">
-@import "../../styles/custom/fn.less";
+@import "../styles/custom/fn.less";
 
 .page-borrow{
 
