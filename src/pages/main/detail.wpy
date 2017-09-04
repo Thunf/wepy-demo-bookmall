@@ -190,7 +190,7 @@
       },
       toBorrow() {
         // 查看书架
-        wx.switchTab({url: '/pages/main/borrow'})
+        wx.switchTab({url: '/pages/borrow'})
       },
       toAdd() {
         // 根据业务接口处理数据

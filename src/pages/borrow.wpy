@@ -1,5 +1,6 @@
 <template>
   <view class="page-borrow">
+    borrow
   </view>
 </template>
 
@@ -9,7 +10,7 @@
   import http from '../mixins/http'
   import base from '../mixins/base'
 
-  export default class mainBorrow extends wepy.page {
+  export default class pageBorrow extends wepy.page {
     mixins = [base, http]
     config = {
       navigationBarTitleText: '书架',

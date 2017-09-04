@@ -19,7 +19,7 @@
   import Category from '../components/category'
   import BookList from '../components/bookList'
 
-  export default class Index extends wepy.page {
+  export default class pageIndex extends wepy.page {
     mixins = [base, http]
     config = {
       navigationBarTitleText: '首页',
