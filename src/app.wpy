@@ -7,10 +7,13 @@ export default class extends wepy.app {
   config = {
     pages: [
       'pages/index',
-      'pages/borrow',
       'pages/main/search',
       'pages/main/list',
-      'pages/main/detail'
+      'pages/main/detail',
+
+      'pages/user',
+
+      'pages/borrow'
     ],
     window: {
       navigationBarTitleText: 'BookMall',
@@ -19,6 +22,28 @@ export default class extends wepy.app {
       backgroundColor: '#eaeaea',
       backgroundTextStyle: 'light',
       enablePullDownRefresh: true
+    },
+    tabBar: {
+      color: '#AEADAD',
+      selectedColor: '#049BFF',
+      backgroundColor: '#fff',
+      borderStyle: 'black',
+      list: [{
+        pagePath: 'pages/index',
+        selectedIconPath: './images/tabbars/icon-mark-active@2x.png',
+        iconPath: './images/tabbars/icon-mark@2x.png',
+        text: '首页'
+      }, {
+        pagePath: 'pages/borrow',
+        selectedIconPath: './images/tabbars/icon-shelf-active@2x.png',
+        iconPath: './images/tabbars/icon-shelf@2x.png',
+        text: '借书架'
+      }, {
+        pagePath: 'pages/user',
+        selectedIconPath: './images/tabbars/icon-smile-active@2x.png',
+        iconPath: './images/tabbars/icon-smile@2x.png',
+        text: '我的'
+      }]
     },
     networkTimeout: {
       request: 5000,
