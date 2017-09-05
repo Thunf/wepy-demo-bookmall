@@ -53,7 +53,8 @@ export default class extends wepy.app {
   }
 
   globalData = {
-    userInfo: null
+    user: null,
+    cart: null
   }
 
   constructor () {
@@ -65,6 +66,38 @@ export default class extends wepy.app {
   }
 
   onShow(options) {
+  }
+
+  /* ============= 工具方法（app没法用mixins，就再写一遍了） ============= */
+  isObject(item) {
+    return typeof item === 'object' && !this.isArray(item)
+  }
+  isArray(item) {
+    return Object.prototype.toString.apply(item) === '[object Array]'
+  }
+  isUndefined(item) {
+    return typeof item === 'undefined'
+  }
+
+  /* ========================= 更新缓存信息 ======================== */
+  $updateGlobalData(name, obj) {
+    // 校验: globalData
+    if (!this.globalData) return
+    // 校验: 操作字段
+    if (typeof name !== 'string' || name === '') return {}
+    // 取已有信息
+    const info = this.globalData[name] || {}
+    // 更新缓存
+    if (this.isObject(obj)) {
+      // Object合并第一层
+      this.globalData[name] = Object.assign({}, info, obj)
+    } else if (!this.isUndefined(obj)) {
+      // 其他非undefined数据直接覆盖
+      this.globalData[name] = obj
+    }
+    this.$apply && this.$apply()
+    console.info(`[${obj ? 'UPDATE' : 'GET'} GlobalData ${name}]:`, this.globalData[name])
+    return this.globalData[name]
   }
 }
 </script>
