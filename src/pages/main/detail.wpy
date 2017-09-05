@@ -7,7 +7,7 @@
         </view>
       </block>
       <block wx:else>
-        <image src="{{book.image || ''}}" class="detail-cover" mode="aspectFit"/>
+        <image src="{{book.image || img_banner}}" class="detail-cover" mode="aspectFit"/>
       </block>
       <view class="weui-media-box weui-media-box_text weui-cells_in-small-appmsg">
         <view class="h3 color-333">{{book.name}}</view>
@@ -29,7 +29,7 @@
             <block wx:for="{{description}}" wx:key="index" wx:for-item="desc">
               <view class="detail-text" wx:if="{{desc.type === 'text'}}">{{desc.value}}</view>
               <image wx:elif="{{desc.type === 'image'}}" class="detail-image"
-               src="{{desc.value || ''}}" mode="widthFix"/>
+               src="{{desc.value || img_banner}}" mode="widthFix"/>
             </block>
           </view>
       </view>
@@ -77,6 +77,7 @@
       navigationBarTitleText: '图书详情'
     }
     data = {
+      img_banner: '/images/swiper.png',
       icon_star: '/images/icon/icon-star@2x.png',
       icon_star_active: '/images/icon/icon-star-active@2x.png',
       icon_shelf: '/images/tabbars/icon-shelf@2x.png',
@@ -89,7 +90,9 @@
         pubtime: '1825年',
         pubcompany: '俄国',
         image: '',
-        images: funImages,
+        images: funImages.slice().map(item => {
+          return { image: item }
+        }),
         stock: 1,
         exist: 0,
         desc: [
@@ -104,13 +107,13 @@
           {type: 'text', value: '一切都是瞬息，一切都将会过去；'},
           {type: 'text', value: '而那过去了的，就会成为亲切的怀恋。'}
         ]
-      },
-      banners: funImages.slice().map(item => {
-        return { image: item }
-      })
+      }
     }
 
     computed = {
+      banners () {
+        return this.getArray(this.book && this.book.images)
+      },
       description() {
         const desc = this.book && this.book.desc
         return desc || [{
