@@ -53,8 +53,8 @@ export default class userMixin extends wepy.mixin {
           this.$parent.$updateGlobalData('user', {
             session: Math.random().toString(36).substring(2),
             packages: {
-              times: 1,
-              quantity: 5,
+              times: 0,
+              quantity: 0,
               status: '未借阅'
             },
             identity: {
