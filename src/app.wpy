@@ -11,9 +11,11 @@ export default class extends wepy.app {
       'pages/main/list',
       'pages/main/detail',
 
-      'pages/user',
+      'pages/borrow',
+      'pages/borrow/subscribe',
+      'pages/borrow/result',
 
-      'pages/borrow'
+      'pages/user'
     ],
     window: {
       navigationBarTitleText: 'BookMall',

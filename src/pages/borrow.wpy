@@ -209,7 +209,7 @@
         })
       },
       toSubscribe() {
-        wx.navigateTo({url: '/pages/main/subscribe'})
+        wx.navigateTo({url: '/pages/borrow/subscribe'})
       },
       goMain() {
         wx.switchTab({url: '/pages/index'})
