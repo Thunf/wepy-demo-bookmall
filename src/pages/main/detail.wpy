@@ -134,7 +134,8 @@
     onLoad(query) {
       const id = query && +query.id
       const title = query && query.title
-      // 此处示例代码，替换为展示的名称
+
+      // ======== 此处示例代码，替换为展示的名称 ========
       this.book = Object.assign({}, this.book, {
         id: this.getString(id) || this.book.id,
         name: title || this.book.name
@@ -152,10 +153,6 @@
 
     // 初始化页面数据
     initPageData() {
-      const noPay = Boolean('==== 没有套餐 ====')
-      if (noPay) {
-        // return wx.navigateTo({url: '/pages/main/subscribe'})
-      }
       // 请求图书详情
       this.getDetail()
     }
@@ -168,11 +165,21 @@
       //   fail: ({code, data}) => {}
       // })
 
-      // ===== 以下随机示例：借完 -> 已加 -> 可借 -> 借完~ =====
-      const stock = this.book.stock
-      const exist = this.book.exist
-      this.book.stock = exist
-      this.book.exist = (stock + exist) % 2
+      // 获取书架状态，优化本页交互
+      const ids = this.getCartList().filter(({good}) => good).map(({good}) => this.getString(good.id))
+      // 标识本商品已存在书架中
+      if (ids.indexOf(this.getString(this.book.id)) > -1) {
+        this.book.exist = 1
+      }
+      // 随机库存: 0/1
+      this.book.stock = Math.round(Math.random())
+
+      // ===== 随机示例：借完 -> 已加 -> 可借 -> 借完~ =====
+      // const stock = this.book.stock
+      // const exist = this.book.exist
+      // this.book.stock = exist
+      // this.book.exist = (stock + exist) % 2
+
       // 停止下拉状态
       wx.stopPullDownRefresh()
     }
@@ -209,8 +216,6 @@
           name: book.name,
           author: book.author
         }, ({code, message}) => {
-          console.log(code, message)
-
           // 匹配加车状态
           switch (+code) {
             case 0: {
