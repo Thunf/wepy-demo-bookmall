@@ -50,7 +50,7 @@
           <image class="imgicon" src="{{icon_shelf}}" mode="aspectFit"/>
           <view class="btn-text-bottom">书架</view>
         </button>
-        <button @tap="toAdd" disabled="{{!isEnabled}}" class="weui-btn btn-block btn-flex-full" type="primary">
+        <button @tap="toAdd({{book}})" disabled="{{!isEnabled}}" class="weui-btn btn-block btn-flex-full" type="primary">
           <text wx:if="{{!isEnabled}}">已借完</text>
           <text wx:elif="{{book.exist}}">已添加，查看书架</text>
           <text wx:else>借阅</text>
@@ -67,12 +67,14 @@
   // import { service } from '../../config.js'
   import http from '../../mixins/http'
   import base from '../../mixins/base'
+  import cart from '../../mixins/cart'
+  import user from '../../mixins/user'
   import { funImages } from '../../mixins/demo'
   import Swiper from '../../components/swiper'
   import Screen from '../../components/screen'
 
   export default class mainDetail extends wepy.page {
-    mixins = [base, http]
+    mixins = [base, http, cart, user]
     config = {
       navigationBarTitleText: '图书详情'
     }
@@ -131,7 +133,12 @@
 
     onLoad(query) {
       const id = query && +query.id
-      this.id = id || this.id || 0
+      const title = query && query.title
+      // 此处示例代码，替换为展示的名称
+      this.book = Object.assign({}, this.book, {
+        id: this.getString(id) || this.book.id,
+        name: title || this.book.name
+      })
     }
 
     onShow() {
@@ -195,25 +202,41 @@
         // 查看书架
         wx.switchTab({url: '/pages/borrow'})
       },
-      toAdd() {
+      toAdd(book) {
         // 根据业务接口处理数据
-        // 本书是否已存在
-        const exist = this.getObject(this.book).exist
+        this.addCart({
+          id: book.id,
+          name: book.name,
+          author: book.author
+        }, ({code, message}) => {
+          console.log(code, message)
 
-        // ===== 以下随机示例 =====
-        if (exist) {
-          // 存在本书时，引导查看书架
-          this.methods.toBorrow()
-        } else {
-          // 不存在本书时，添加成功提示
-          wx.showToast({
-            title: '添加到书架成功！',
-            icon: 'success',
-            duration: 1000
-          })
-          // 临时打标
-          this.book.exist = true
-        }
+          // 匹配加车状态
+          switch (+code) {
+            case 0: {
+              if (this.getObject(this.book).exist) {
+                // 存在本书时，引导查看书架
+                this.methods.toBorrow()
+              } else {
+                // 不存在则提示添加成功
+                this.$alert('添加到书架成功！')
+                // 临时打标
+                this.book.exist = true
+              }
+              break
+            }
+            case 4001: ;
+            case 9002: {
+              // 去购买套餐
+              wx.navigateTo({url: '/pages/borrow/subscribe'})
+              break
+            }
+            default: {
+              // 加车失败，提示
+              this.$alert('异常提示', '暂时无法借阅')
+            }
+          }
+        })
       }
     }
 
