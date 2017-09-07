@@ -1,0 +1,140 @@
+<template>
+  <view class="radio-card">
+    <radio-group @change="radioChange">
+      <view class="radio-wrapper" wx:for="{{list}}" wx:key="index">
+        <radio id="{{unique}}-{{index}}" hidden value="{{item[key]}}" checked="{{item.checked}}"></radio>
+
+        <label for="{{unique}}-{{index}}" class="radio-item{{item.checked ? '-checked' : '' }}">
+          <icon wx:if="{{item.checked}}" class="label-icon" type="success" size="14" color="#049BFF"></icon>
+          <text wx:else class="label-icon icon-circle" style="font-size: 14px;"></text>
+          <text>{{item.period}}个月</text>
+          <view class="pull-right">
+            <text>每次</text>
+            <text class="color-text">{{item.quantity}}</text>
+            <text>本、可借</text>
+            <text class="color-text">{{item.times}}</text>
+            <text>次</text>
+          </view>
+        </label>
+
+      </view>
+    </radio-group>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import base from '../mixins/base.js'
+
+  export default class radioCard extends wepy.component {
+    mixins = [base]
+    props = {
+      list: {
+        twoWay: true,
+        type: Object,
+        default: []
+      },
+      value: {
+        twoWay: true,
+        type: [String, Number],
+        default: ''
+      },
+      key: {
+        type: String,
+        default: 'value'
+      }
+    }
+
+    data = {
+      unique: Math.random().toString(36).substring(2)
+    }
+
+    onLoad() {
+    }
+
+    computed = {
+      lists() {
+        // 初始化已选项
+        /* ============== 此处做法并不适合，但目前找不到拿到真正list的地方了 ============== */
+        const value = this.getString(this.value)
+        for (var i = 0; i < this.list.length; i++) {
+          if (this.isValueEqual(value, this.list[i][this.key])) {
+            this.list[i].checked = true
+          }
+        }
+      }
+    }
+
+    methods = {
+      radioChange(e) {
+        console.log('radio发生change事件，携带value值为：', e.detail.value)
+        var value = e.detail.value
+        for (var i = 0; i < this.list.length; i++) {
+          if (this.isValueEqual(value, this.list[i][this.key])) {
+            this.list[i].checked = true
+            this.value = this.list[i][this.key]
+          } else {
+            this.list[i].checked = false
+          }
+        }
+      }
+    }
+
+    isValueEqual(a, b) {
+      return this.getString(a) === this.getString(b)
+    }
+  }
+</script>
+
+<style type="less">
+@import "../styles/custom/fn.less";
+
+@uiSpace: 20rpx;
+
+.radio-card{
+
+  .radio-wrapper{
+    display: block;
+    width: 100%;
+
+    & + .radio-wrapper{
+      margin-top: @uiSpace;
+    }
+  }
+
+  .radio-item,
+  .radio-item-checked{
+    display: block;
+    width: 100%;
+    padding: @uiSpace;
+    line-height: 1;
+    .h4();
+    color: #999;
+    background: transparent;
+    border: 2rpx solid #e2e2e2;
+    border-radius: 6rpx;
+    box-sizing: border-box;
+  }
+
+  .radio-item-checked{
+    border-color: @weuiColorPrimary;
+  }
+
+  .label-icon{
+    margin-right: @uiSpace;
+  }
+
+  .icon-circle{
+    width: 1em;
+    height: 1em;
+    border: 2rpx solid #999;
+    border-radius: 50%;
+    vertical-align: middle;
+    box-sizing: border-box;
+  }
+  .color-text{
+    color: @weuiColorPrimary;
+  }
+
+}
+</style>
