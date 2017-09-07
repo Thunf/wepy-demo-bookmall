@@ -224,7 +224,11 @@
                 this.methods.toBorrow()
               } else {
                 // 不存在则提示添加成功
-                this.$alert('添加到书架成功！')
+                wx.showToast({
+                  title: '添加到书架成功！',
+                  icon: 'success',
+                  duration: 1000
+                })
                 // 临时打标
                 this.book.exist = true
               }

@@ -39,7 +39,7 @@ export default class extends wepy.app {
         pagePath: 'pages/borrow',
         selectedIconPath: './images/tabbars/icon-shelf-active@2x.png',
         iconPath: './images/tabbars/icon-shelf@2x.png',
-        text: '借书架'
+        text: '书架'
       }, {
         pagePath: 'pages/user',
         selectedIconPath: './images/tabbars/icon-smile-active@2x.png',
@@ -90,7 +90,7 @@ export default class extends wepy.app {
     // 取已有信息
     const info = this.globalData[name] || {}
     // 更新缓存
-    if (this.isObject(obj)) {
+    if (obj && this.isObject(obj)) {
       // Object合并第一层
       this.globalData[name] = Object.assign({}, info, obj)
     } else if (!this.isUndefined(obj)) {
