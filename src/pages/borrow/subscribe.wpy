@@ -1,6 +1,53 @@
 <template>
   <view class="borrow-subscribe">
-    subscribe
+    
+    <view class="weui-cells weui-cells_after-title borrow-address">
+      <view class="weui-cell block">
+        <view class="weui-media-box__title h4 color-666">订阅时长</view>
+        <block wx:if="{{list && list.length > 0}}">
+          <radioCard :list.sync="list" :value.sync="value" key="id"></radioCard>
+        </block>
+      </view>
+      <view class="weui-cell reset-cell-block">
+        <view class="weui-media-box__title h4 color-666">绑定手机号</view>
+      </view>
+      <block>
+        <view class="weui-cell weui-cell_input">
+          <view class="weui-cell__hd">
+            <view class="weui-label reset-label-left">+86</view>
+          </view>
+          <view class="weui-cell__bd h4">
+            <input @input="typing('phone')" class="weui-input" value="{{phone}}" placeholder="请填写收货人手机号码"/>
+          </view>
+        </view>
+        <view class="weui-cell weui-cell_input reset-input">
+          <view class="weui-cell__bd h4">
+            <input @input="typing('code')" class="weui-input" value="{{code}}" placeholder="请输入验证码"/>
+          </view>
+          <view class="weui-cell__ft">
+            <view class="weui-label reset-label-right">
+              <button @tap="verify" class="weui-btn mini-btn" type="default" size="mini">{{btnText}}</button>
+            </view>
+          </view>
+        </view>
+      </block>
+      <view class="weui-cell weui-cell_link">
+        <view class="weui-cell__bd color-666">价格</view>
+        <view class="weui-cell__ft pull-right color-red">
+          <text class="h2">{{realPrice}}</text>
+          <text>元</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="weui-cells__tips">
+      <view class="color-666">说明</view>
+      <view class="color-999">1. 订阅后不可退订</view>
+      <view class="color-999">2. 如果订阅过程中无书可借，可申请退款</view>
+    </view>
+
+    <button @tap="pay" class="weui-btn btn-primary" type="primary">去支付</button>
+
   </view>
 </template>
 
@@ -9,22 +56,58 @@
   // import { service } from '../../config.js'
   import http from '../../mixins/http'
   import base from '../../mixins/base'
+  import user from '../../mixins/user'
+  import { packages } from '../../mixins/demo'
+  import radioCard from '../../components/radioCard'
 
   export default class borrowSubscribe extends wepy.page {
-    mixins = [base, http]
+    mixins = [base, http, user]
     config = {
       navigationBarTitleText: '订阅套餐',
       enablePullDownRefresh: false
     }
     data = {
+      // 手机号/验证码
+      phone: '',
+      code: '',
+
+      loading: false,
+      timer: null,
+      time: 0,
+
+      // 套餐值
+      value: '1',
+      // 套餐列表
+      list: undefined
     }
 
     computed = {
+      listIndex() {
+        const arr = this.getArray((this.list || []).filter((item, index) => {
+          item.TEMPINDEX = index
+          return this.getString(this.value) === this.getString(item.id)
+        }))
+        const index = arr[0] && arr[0].TEMPINDEX
+        return this.getNumber(index)
+      },
+      realPrice() {
+        const item = this.list && this.list[this.listIndex]
+        const price = item && item.price
+        return price || 0
+      },
+      btnText() {
+        return +this.time > 0 ? `${this.time}s后重新获取` : '获取验证码'
+      }
+    }
+
+    onLoad() {
+      // 初始化页面数据
+      this.initPageData()
     }
 
     onShow() {
-      // 初始化页面数据
-      this.initPageData()
+      // 清空code
+      this.code = ''
     }
 
     onPullDownRefresh() {
@@ -33,13 +116,139 @@
 
     // 初始化页面数据
     initPageData() {
-      console.log('initPageData')
+      // 根据业务接口处理数据:请求套餐详情
+      // this.$get({url: service.packages}, {
+      //   success: ({code, data}) => {},
+      //   fail: ({code, data}) => {}
+      // })
+
+      // ===== 以下随机示例 =====
+      setTimeout(() => {
+        this.list = this.getArray(packages)
+        this.$getUserInfo((user) => {
+          this.phone = this.getString(this.getObject(user.identity).mobile)
+        })
+      }, 200)
     }
 
     methods = {
+      pay() {
+        // 防抖
+        if (this.loading) return
+        if (!this.isPhone(this.phone)) {
+          return this.$alert('温馨提示', '请输入正确的手机号码')
+        }
+        if (!this.getString(this.code)) {
+          return this.$alert('温馨提示', '请输入验证码')
+        }
+        if (!this.getString(this.value)) {
+          return this.$alert('温馨提示', '请选择订阅时长')
+        }
+        const data = {
+          mobile: this.getString(this.phone),
+          code: this.getString(this.code),
+          pid: this.getString(this.value)
+        }
+        // 开防抖
+        this.loading = true
+        // 调用登录
+        this.$login(({code}) => {
+          // 获取微信登录code，再提交套餐订单
+          this.requestPayment(Object.assign({}, data, {weixin_code: code}))
+        }, 'noAutoLogin')
+      },
+      typing (type, e) {
+        if (this.isDefined(this[type])) {
+          this[type] = e.detail.value
+        }
+      },
+      verify() {
+        // 防抖
+        if (this.loading || this.time > 0) return
+        if (!this.isPhone(this.phone)) {
+          return this.$alert('温馨提示', '请输入正确的手机号码')
+        }
+        // 开防抖
+        // this.loading = true
+        // 开倒计时
+        this.timing(60)
+
+        // 根据业务接口处理:发送验证码
+        // this.$post({url: service.sendCode, data}, {
+        //   success: (res) => {},
+        //   fail: (res) => {
+        //     clearTimeout(this.timer)
+        //     this.timing(0)
+        //   },
+        //   complete: () => {this.loading = false}
+        // })
+      }
+    }
+
+    requestPayment (data) {
+      // 根据业务接口处理:创建交易单
+      // this.loading = true
+      // this.$post({url: service.pay, data}, {
+      //   success: ({code, data}) => {},
+      //   fail: ({code, data}) => {},
+      //   complete: () => {this.loading = false}
+      // })
+
+      // ===================== 以下为success随机示例 =====================
+      setTimeout(() => {
+        const params = this.getObject({
+          timeStamp: '',
+          nonceStr: '',
+          package: '',
+          signType: '',
+          paySign: ''
+        })
+        // 成功需要唤起支付
+        wx.requestPayment(Object.assign({}, params, {
+          success: (res) => {
+            wx.showModal({
+              title: '支付提示',
+              content: '支付成功！',
+              showCancel: false,
+              success: (res) => { wx.switchTab({url: '/pages/borrow'}) }
+            })
+          },
+          fail: (res) => {
+            wx.showModal({
+              title: '支付提示',
+              // content: '支付失败，请重新尝试！',
+              content: '示例没法做支付,就当成功了吧~',
+              showCancel: false,
+              success: (res) => {
+                // ============ 假装支付成功:需要更新状态 ============
+                this.$parent.$updateGlobalData('user', {
+                  packages: {
+                    times: this.list[this.listIndex].times,
+                    quantity: this.list[this.listIndex].quantity,
+                    status: '未借阅'
+                  }
+                })
+                wx.navigateBack()
+              }
+            })
+          },
+          complete: () => { this.loading = false }
+        }))
+      }, 100)
+    }
+
+    timing(time) {
+      this.time = this.getNumber(time)
+      this.$apply()
+      this.timer = setTimeout(() => {
+        if (time > 0) {
+          this.timing(time - 1)
+        }
+      }, 1000)
     }
 
     components = {
+      radioCard
     }
   }
 </script>
@@ -48,6 +257,39 @@
 @import "../../styles/custom/fn.less";
 
 .borrow-subscribe{
+  .weui-media-box__title{
+    padding-bottom: 0.5em;
+  }
+  .borrow-address{
+    margin-bottom: 1em;
+  }
+  .reset-cell-block{
+    display:block !important;
+    padding-bottom:0;
 
+    & + .weui-cell{
+      &:before{
+        display: none;
+      }
+    }
+  }
+
+  .reset-label-left{
+    color: #999;
+    margin-right:1em;
+    padding-right: 1em;
+    border-right: 1rpx solid @uiBorderColor;
+  }
+
+  .reset-label-right{
+    color: #666;
+    line-height: 0;
+    margin-left: 1em;
+    padding-left: 1em;
+  }
+
+  .reset-input{
+    padding: 6px 15px;
+  }
 }
 </style>
