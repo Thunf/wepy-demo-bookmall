@@ -157,14 +157,14 @@
         setTimeout(() => {
           const random = Math.random() * 10
           const res = {
-            code: random < 5 ? 0 : random,
-            message: '大吉大利 今晚吃鸡'
+            code: random < 3 ? 0 : random,
+            message: '大吉大利 再试一次'
           }
 
           // 提示成功/失败
           wx.navigateTo({
             // type: 成功 = 0，失败 > 0，
-            url: `/pages/borrow/tip?type=${this.getNumber(res.code)}&message=${res.message}`
+            url: `/pages/borrow/result?type=${this.getNumber(res.code)}&message=${res.message}`
           })
         }, 200)
       },

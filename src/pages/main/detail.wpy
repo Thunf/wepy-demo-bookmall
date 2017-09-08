@@ -134,11 +134,13 @@
     onLoad(query) {
       const id = query && +query.id
       const title = query && query.title
+      const status = query && +query.status
 
-      // ======== 此处示例代码，替换为展示的名称 ========
+      // ======== 此处示例代码，方便示例展示 ========
       this.book = Object.assign({}, this.book, {
         id: this.getString(id) || this.book.id,
-        name: title || this.book.name
+        name: title || this.book.name,
+        stock: Math.abs((status || Math.round(Math.random())) - 1)
       })
     }
 
@@ -171,8 +173,8 @@
       if (ids.indexOf(this.getString(this.book.id)) > -1) {
         this.book.exist = 1
       }
-      // 随机库存: 0/1
-      this.book.stock = Math.round(Math.random())
+      // 切换展示库存: 0/1
+      this.book.stock = Math.abs(this.book.stock - 1)
 
       // ===== 随机示例：借完 -> 已加 -> 可借 -> 借完~ =====
       // const stock = this.book.stock
@@ -216,10 +218,11 @@
           name: book.name,
           author: book.author
         }, ({code, message}) => {
+          const exist = this.getObject(this.book).exist
           // 匹配加车状态
           switch (+code) {
             case 0: {
-              if (this.getObject(this.book).exist) {
+              if (exist) {
                 // 存在本书时，引导查看书架
                 this.methods.toBorrow()
               } else {
@@ -234,6 +237,24 @@
               }
               break
             }
+            // 超出书架可添加的最大值
+            case 1001: {
+              if (message && !exist) {
+                // 不存在本书时，提示去书架删减其他书
+                wx.showModal({
+                  title: '温馨提示',
+                  content: message,
+                  showCancel: false,
+                  success: () => {
+                    this.methods.toBorrow()
+                  }
+                })
+              } else {
+                // 存在本书时，直接引导查看书架
+                this.methods.toBorrow()
+              }
+              break
+            }
             case 4001: ;
             case 9002: {
               // 去购买套餐
@@ -242,7 +263,7 @@
             }
             default: {
               // 加车失败，提示
-              this.$alert('异常提示', '暂时无法借阅')
+              this.$alert('异常提示', message || '暂时无法借阅')
             }
           }
         })
