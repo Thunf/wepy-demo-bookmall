@@ -34,7 +34,7 @@
           <textarea @input="typing('address')" class="weui-textarea" value="{{address}}" placeholder="请填写收货地址" auto-height/>
         </view>
         <view @tap="chooseAddress" wx:if="{{showChooseAddress}}" class="link link-red reset-pull-middle">
-          <image src="../../images/icon/icon-location@2x.png" class="imgicon icon-location" mode="aspectFit"/>
+          <image src="/images/icon/icon-location@2x.png" class="imgicon icon-location" mode="aspectFit"/>
         </view>
       </view>
       <view class="weui-cell weui-cell_input">
@@ -119,11 +119,11 @@
 
         // 初始化收件人信息
         const { identity, packages, nickName } = data
-        this.phone = this.getString(identity.mobile, '手机号码')
-        this.address = this.getString(identity.address, '地址')
-        this.receiver = this.getString(nickName, '用户')
-        this.borrowTime = this.getNumber(packages.times, 1)
-        this.borrowCount = this.getNumber(packages.quantity, 5)
+        this.phone = this.getString(this.phone || identity.mobile, '手机号码')
+        this.address = this.getString(this.address || identity.address, '地址')
+        this.receiver = this.getString(this.receiver || nickName, '用户')
+        this.borrowTime = this.getNumber(this.borrowTime || packages.times, 1)
+        this.borrowCount = this.getNumber(this.borrowCount || packages.quantity, 5)
 
         // 更新借阅列表
         this.updateBorrowList()
