@@ -1,6 +1,6 @@
 # wepy-demo-bookmall
 
-Demo codes for [满熊阅读](http://7xrhcw.com1.z0.glb.clouddn.com/wechat_default_344.jpg) which used in a very early version.
+Demo codes for [满🐻阅读](http://7xrhcw.com1.z0.glb.clouddn.com/wechat_default_344.jpg) which used in a very early version.
 
 
 
