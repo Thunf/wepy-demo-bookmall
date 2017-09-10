@@ -111,9 +111,7 @@
     methods = {
       goReturn(id) {
         const str = this.getString(id)
-        wx.redirectTo({
-          url: `/pages/user/return?id=${str}`
-        })
+        wx.navigateTo({url: `/pages/user/return?id=${str}`})
       }
     }
 
