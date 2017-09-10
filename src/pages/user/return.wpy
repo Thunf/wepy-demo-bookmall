@@ -1,6 +1,26 @@
 <template>
   <view class="user-return">
-    user-return
+    <view class="weui-panel">
+      <view class="weui-media-box weui-media-box_text">
+        <view class="weui-media-box__title weui-media-box__title_in-text">请将图书邮寄至：</view>
+        <view class="weui-media-box__desc">{{address}}</view>
+      </view>
+    </view>
+    <view class="weui-panel">
+      <view class="weui-cells weui-cells_after-title">
+        <view class="weui-cell weui-cell_input">
+          <view class="weui-cell__bd">
+            <input @input="typing('co')" class="weui-input" value="{{express_co}}" placeholder="请输入快递公司"/>
+          </view>
+        </view>
+        <view class="weui-cell weui-cell_input">
+          <view class="weui-cell__bd">
+            <input @input="typing('id')" class="weui-input" value="{{express_id}}" placeholder="请输入快递单号"/>
+          </view>
+        </view>
+      </view>
+    </view>
+    <button @tap="doReturn" class="weui-btn btn-primary" type="primary">确认还书</button>
   </view>
 </template>
 
@@ -17,12 +37,18 @@
       enablePullDownRefresh: false
     }
     data = {
+      id: '',
+      express_co: '道是无晴却有晴',
+      express_id: '',
+      address: '年年岁岁花相似 岁岁年年人不同',
+      loading: false
     }
 
-    computed = {
+    onLoad(query) {
+      this.id = this.getString(query && +query.id)
     }
 
-    onShow() {
+    onReady() {
       // 初始化页面数据
       this.initPageData()
     }
@@ -33,13 +59,44 @@
 
     // 初始化页面数据
     initPageData() {
-      console.log('initPageData')
+      // 根据业务接口处理:请求邮寄地址
+      // if (this.loading) return
+      // this.loading = true
+      // this.$get({url: service.express}, {
+      //   success: ({code, data}) => {},
+      //   fail: ({code, data}) => {},
+      //   complete: () => {this.loading = false}
+      // })
     }
 
     methods = {
-    }
+      doReturn() {
+        if (!this.getString(this.express_co)) {
+          return this.$alert('温馨提示', '请输入快递公司')
+        }
+        if (!this.getString(this.express_id)) {
+          return this.$alert('温馨提示', '请输入快递单号')
+        }
 
-    components = {
+        // 根据业务接口处理:提交信息
+        // if (this.loading) return
+        // this.loading = true
+        // this.$post({url: service.return, data}, {
+        //   success: ({code, data}) => {},
+        //   fail: ({code, data}) => {},
+        //   complete: () => {this.loading = false}
+        // })
+
+        // =============== 随机示例 ===============
+        wx.showToast({title: '提交成功！', icon: 'success', duration: 1000})
+        setTimeout(wx.navigateBack, 1000)
+      },
+      typing (type, e) {
+        const key = `express_${type}`
+        if (this.isDefined(this[key])) {
+          this[key] = e.detail.value
+        }
+      }
     }
   }
 </script>
