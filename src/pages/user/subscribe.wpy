@@ -1,0 +1,53 @@
+<template>
+  <view class="user-subscribe">
+    user-subscribe
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  // import { service } from '../../config.js'
+  import http from '../../mixins/http'
+  import base from '../../mixins/base'
+
+  export default class userSubscribe extends wepy.page {
+    mixins = [base, http]
+    config = {
+      navigationBarTitleText: '我的订阅',
+      enablePullDownRefresh: false
+    }
+    data = {
+    }
+
+    computed = {
+    }
+
+    onShow() {
+      // 初始化页面数据
+      this.initPageData()
+    }
+
+    onPullDownRefresh() {
+      this.initPageData()
+    }
+
+    // 初始化页面数据
+    initPageData() {
+      console.log('initPageData')
+    }
+
+    methods = {
+    }
+
+    components = {
+    }
+  }
+</script>
+
+<style lang="less">
+@import "../../styles/custom/fn.less";
+
+.user-subscribe{
+
+}
+</style>
