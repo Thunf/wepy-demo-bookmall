@@ -224,6 +224,7 @@
                 this.$parent.$updateGlobalData('user', {
                   packages: {
                     times: this.list[this.listIndex].times,
+                    remain: this.list[this.listIndex].times,
                     quantity: this.list[this.listIndex].quantity,
                     status: '未借阅'
                   }
