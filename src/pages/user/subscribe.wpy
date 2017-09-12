@@ -1,6 +1,15 @@
 <template>
   <view class="user-subscribe">
-    user-subscribe
+    <view class="subscribe-title">我的订阅</view>
+    <view class="weui-flex subscribe-wrapper">
+      <block wx:for="{{list}}" wx:key="index">
+        <view class="weui-flex__item subscribe-item">
+          <view class="color-666 item-title">{{item.title}}</view>
+          <view class="color-bbb h5">{{item.subtitle}}</view>
+        </view>
+      </block>
+    </view>
+    <button @tap="change" wx:if="{{loaded && isShowBtn}}" class="weui-btn mini-btn" type="primary" size="mini">立即续订</button>
   </view>
 </template>
 
@@ -9,17 +18,44 @@
   // import { service } from '../../config.js'
   import http from '../../mixins/http'
   import base from '../../mixins/base'
+  import user from '../../mixins/user'
 
   export default class userSubscribe extends wepy.page {
-    mixins = [base, http]
+    mixins = [base, http, user]
     config = {
-      navigationBarTitleText: '我的订阅',
-      enablePullDownRefresh: false
+      navigationBarTitleText: '我的订阅'
     }
     data = {
+      // 后置显示按钮
+      loaded: false,
+      // 面板数据
+      list: [{
+        key: 'remain',
+        unit: '天',
+        value: 0,
+        title: '0天',
+        subtitle: '剩余天数'
+      }, {
+        key: 'times',
+        unit: '次',
+        value: 0,
+        title: '0次',
+        subtitle: '可借'
+      }, {
+        key: 'quantity',
+        unit: '本',
+        value: 0,
+        title: '0本',
+        subtitle: '每次可借'
+      }]
     }
 
     computed = {
+      isShowBtn() {
+        return !this.list.reduce((pre, post) => {
+          return (this.isObject(pre) ? pre.value : pre) && !!post.value
+        })
+      }
     }
 
     onShow() {
@@ -33,21 +69,74 @@
 
     // 初始化页面数据
     initPageData() {
-      console.log('initPageData')
+      // 根据业务接口处理:请求套餐详情
+      // this.$get({url: service.package}, {
+      //   success: ({code, data}) => {},
+      //   fail: ({code, data}) => {},
+      //   complete: () => {this.loaded = false}
+      // })
+
+      // =============== 随机示例 ===============
+      this.$getUserInfo(({packages}) => {
+        const list = this.getArray(this.list)
+        list.map((obj) => {
+          const item = this.getObject(obj)
+          const unit = this.getString(item.unit)
+          const value = this.getNumber(packages[item.key], null)
+          value && Object.assign(item, {
+            title: `${value}${unit}`,
+            value: value
+          })
+          return item
+        })
+        this.list = list
+        this.loaded = true
+      })
     }
 
     methods = {
-    }
-
-    components = {
+      change() {
+        wx.navigateTo({
+          url: '/pages/borrow/subscribe'
+        })
+      }
     }
   }
 </script>
 
 <style lang="less">
+@import "../../styles/weui/base/fn.wxss";
 @import "../../styles/custom/fn.less";
 
 .user-subscribe{
-
+  text-align: center;
+  background: #fff;
+  .subscribe-title{
+    .h4();
+    text-align: left;
+    color: #666;
+    padding: 20rpx 40rpx 10rpx;
+  }
+  .subscribe-wrapper{
+    padding: 20rpx 0;
+  }
+  .subscribe-item{
+    position: relative;
+    &:before {
+      .setLeftLine(@weuiCellBorderColor);
+    }
+    &:first-child {
+      &:before {
+        display: none;
+      }
+    }
+  }
+  .item-title{
+    .h3();
+    line-height: 1;
+  }
+  .mini-btn{
+    margin: 1em auto;
+  }
 }
 </style>
