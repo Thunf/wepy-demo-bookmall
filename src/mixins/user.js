@@ -58,6 +58,7 @@ export default class userMixin extends wepy.mixin {
               status: '未借阅'
             },
             identity: {
+              collection: 20,
               type: '未订阅用户',
               mobile: '1234567890',
               address: '在那遥远的地方 有一位美丽的姑娘',

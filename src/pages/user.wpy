@@ -32,7 +32,7 @@
         <navigator url="/pages/user/collect" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
           <view class="weui-cell__bd">收藏图书</view>
           <view class="weui-cell__ft weui-cell__ft_in-access">
-            <text class="color-green">{{packages.quantity || '0'}}</text>
+            <text class="color-green">{{identity.collection || '0'}}</text>
           </view>
         </navigator>
       </view>
@@ -61,11 +61,11 @@
 
         packages: {
           times: 0,
-          quantity: 0,
           status: '借阅状态'
         },
         identity: {
-          type: '订阅状态'
+          type: '订阅状态',
+          collection: 0
         }
       }
     }

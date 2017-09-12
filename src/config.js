@@ -14,6 +14,9 @@ export const service = {
   // 筛选页接口 GET 
   tags: `${host}/bookmall/tags`,
 
+  // 假装有收藏接口 POST
+  collect: `${host}/bookmall/list`,
+
   // 主域
   host
 }
