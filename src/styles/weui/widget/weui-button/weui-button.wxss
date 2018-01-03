@@ -3,9 +3,7 @@
 .weui-btn{
     margin-top: @weuiBtnDefaultGap;
     border-radius: 0;
-    // &:first-child{
-    //     margin-top: 0;
-    // }
+    margin: auto;
 }
 .weui-btn-area{
     margin: @weuiCellsMarginTop @weuiBtnDefaultGap .3em;

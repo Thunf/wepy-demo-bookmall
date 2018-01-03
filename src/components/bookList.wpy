@@ -21,7 +21,7 @@
                 <text class="booklist-text color-bbb">已借完</text>
               </block>
 
-              <view @tap.stop="toStar({{item}}, {{index}})" class="booklist-status">
+              <view catchTap="toStar" class="booklist-status" data-book="{{item}}" data-index="{{index}}">
                 <block a:if="{{item.collected == 1}}">
                   <image class="imgicon" src="{{icon_star_active}}" mode="aspectFit"/>
                   <text class="booklist-text reset-text-star color-999">已收藏</text>
@@ -119,7 +119,7 @@
     }
 
     methods = {
-      toStar(book, index) {
+      toStar({target: {dataset: {book, index}}}) {
         // 将要发生的收藏动作
         const isCollect = Boolean(book && +book.collected)
         const newType = isCollect ? 0 : 1
