@@ -3,7 +3,7 @@
     <view a:if="{{hasTitle}}" class="checkbox-title">{{title}}</view>
     <checkbox-group style="margin-right: {{style_gutter_edge}}" @change="checkboxChange">
       <view class="checkbox-wrapper" a:for="{{list}}" a:key="index" style="width:{{style_width}};padding-right: {{style_gutter}};margin-bottom: {{style_gutter}}">
-        <checkbox id="{{unique}}-{{index}}" hidden value="{{item.value}}" checked="{{item.checked}}"></checkbox>
+        <checkbox class="checkbox" id="{{unique}}-{{index}}" hidden value="{{item.value}}" checked="{{item.checked}}"></checkbox>
         <label for="{{unique}}-{{index}}" class="checkbox-item{{item.checked ? '-checked' : '' }}">
           <text>{{item.name}}</text>
         </label>
@@ -125,6 +125,13 @@
 
   &:last-of-type{
     margin-bottom: 40rpx;
+  }
+
+  checkbox.checkbox{
+    position: absolute;
+    width: 0;
+    height: 0;
+    visibility: hidden;
   }
 
   .checkbox-title {
