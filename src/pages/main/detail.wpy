@@ -50,7 +50,7 @@
           <image class="imgicon" src="{{icon_shelf}}" mode="aspectFit"/>
           <view class="btn-text-bottom">书架</view>
         </button>
-        <button @tap="toAdd({{book}})" disabled="{{!isEnabled}}" class="weui-btn btn-block btn-flex-full" type="primary">
+        <button @tap="toAdd" data-book="{{book}}" disabled="{{!isEnabled}}" class="weui-btn btn-block btn-flex-full" type="primary">
           <text a:if="{{!isEnabled}}">已借完</text>
           <text a:elif="{{book.exist}}">已添加，查看书架</text>
           <text a:else>借阅</text>
@@ -211,7 +211,7 @@
         // 查看书架
         my.switchTab({url: '/pages/borrow'})
       },
-      toAdd(book) {
+      toAdd({target: {dataset: {book}}}) {
         // 根据业务接口处理数据
         this.addCart({
           id: book.id,

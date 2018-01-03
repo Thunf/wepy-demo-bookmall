@@ -2,7 +2,7 @@
   <view class="radio-card">
     <radio-group @change="radioChange">
       <view class="radio-wrapper" a:for="{{list}}" a:key="index">
-        <radio id="{{unique}}-{{index}}" hidden value="{{item[key]}}" checked="{{item.checked}}"></radio>
+        <radio class="radio" id="{{unique}}-{{index}}" hidden value="{{item[key]}}" checked="{{item.checked}}"></radio>
 
         <label for="{{unique}}-{{index}}" class="radio-item{{item.checked ? '-checked' : '' }}">
           <icon a:if="{{item.checked}}" class="label-icon" type="success" size="14" color="#049BFF"></icon>
@@ -102,6 +102,13 @@
     }
   }
 
+  radio.radio{
+    position: absolute;
+    width: 0;
+    height: 0;
+    visibility: hidden;
+  }
+
   .radio-item,
   .radio-item-checked{
     display: block;
@@ -125,6 +132,7 @@
   }
 
   .icon-circle{
+    display: inline-block;
     width: 1em;
     height: 1em;
     border: 2rpx solid #999;

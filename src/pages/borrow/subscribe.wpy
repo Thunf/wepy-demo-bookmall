@@ -17,12 +17,12 @@
             <view class="weui-label reset-label-left">+86</view>
           </view>
           <view class="weui-cell__bd h4">
-            <input @input="typing('phone')" class="weui-input" value="{{phone}}" placeholder="请填写收货人手机号码"/>
+            <input @input="typingPhone" class="weui-input" value="{{phone}}" placeholder="请填写收货人手机号码"/>
           </view>
         </view>
         <view class="weui-cell weui-cell_input reset-input">
           <view class="weui-cell__bd h4">
-            <input @input="typing('code')" class="weui-input" value="{{code}}" placeholder="请输入验证码"/>
+            <input @input="typingCode" class="weui-input" value="{{code}}" placeholder="请输入验证码"/>
           </view>
           <view class="weui-cell__ft">
             <view class="weui-label reset-label-right">
@@ -157,10 +157,11 @@
           this.requestPayment(Object.assign({}, data, {weixin_code: code}))
         }, 'noAutoLogin')
       },
-      typing (type, e) {
-        if (this.isDefined(this[type])) {
-          this[type] = e.detail.value
-        }
+      typingPhone (e) {
+        this.typing('phone', e)
+      },
+      typingCode (e) {
+        this.typing('code', e)
       },
       verify() {
         // 防抖
@@ -185,6 +186,12 @@
       }
     }
 
+    typing (type, e) {
+      if (this.isDefined(this[type])) {
+        this[type] = e.detail.value
+      }
+    }
+
     requestPayment (data) {
       // 根据业务接口处理:创建交易单
       // this.loading = true
@@ -204,19 +211,11 @@
           paySign: ''
         })
         // 成功需要唤起支付
-        my.requestPayment(Object.assign({}, params, {
+        my.tradePay(Object.assign({}, params, {
           success: (res) => {
             my.alert({
               title: '支付提示',
               content: '支付成功！',
-              success: (res) => { my.switchTab({url: '/pages/borrow'}) }
-            })
-          },
-          fail: (res) => {
-            my.alert({
-              title: '支付提示',
-              // content: '支付失败，请重新尝试！',
-              content: '示例没法做支付,就当成功了吧~',
               success: (res) => {
                 // ============ 假装支付成功:需要更新状态 ============
                 this.$parent.$updateGlobalData('user', {
@@ -227,7 +226,16 @@
                     status: '未借阅'
                   }
                 })
-                my.navigateBack()
+                my.switchTab({url: '/pages/borrow'})
+              }
+            })
+          },
+          fail: (res) => {
+            my.alert({
+              title: '支付提示',
+              content: '支付失败，请重新尝试！',
+              success: (res) => {
+                // my.navigateBack()
               }
             })
           },

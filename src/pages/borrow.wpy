@@ -13,9 +13,9 @@
             <block a:if="{{item.good}}">
               <view class="icon-order-circle">{{index+1}}</view>
               <view class="borrow-name-wrapper">
-                <view class="borrow-book-name">{{item.good.name}}</view>
+                <text class="borrow-book-name">{{item.good.name}}</text>
               </view>
-              <view @tap="remove({{item.good}})" class="icon-delete reset-pull-right"></view>
+              <view @tap="remove" data-good="{{item.good}}" class="icon-delete reset-pull-right"></view>
             </block><block a:else>
               <view class="icon-order-empty">{{index+1}}</view>
               <view class="borrow-name-wrapper">
@@ -31,7 +31,7 @@
       <view class="weui-media-box weui-media-box_text borrow-address">
         <view class="weui-media-box__title h4 color-666">收货地址</view>
         <view class="weui-cell__bd h4">
-          <textarea @input="typing('address')" class="weui-textarea" value="{{address}}" placeholder="请填写收货地址" auto-height/>
+          <textarea @input="typingAddress" class="weui-textarea" value="{{address}}" placeholder="请填写收货地址" auto-height/>
         </view>
         <view @tap="chooseAddress" a:if="{{showChooseAddress}}" class="link link-red reset-pull-middle">
           <image src="/images/icon/icon-location@2x.png" class="imgicon icon-location" mode="aspectFit"/>
@@ -42,7 +42,7 @@
           <view class="weui-label reset-label-left h4">手机号码</view>
         </view>
         <view class="weui-cell__bd h4">
-          <input @input="typing('phone')" class="weui-input" value="{{phone}}" placeholder="请填写收货人手机号码"/>
+          <input @input="typingPhone" class="weui-input" value="{{phone}}" placeholder="请填写收货人手机号码"/>
         </view>
       </view>
       <view class="weui-cell weui-cell_input">
@@ -50,7 +50,7 @@
           <view class="weui-label reset-label-left h4">收货人</view>
         </view>
         <view class="weui-cell__bd h4">
-          <input @input="typing('receiver')" class="weui-input" value="{{receiver}}" placeholder="请填写收货人姓名"/>
+          <input @input="typingReceiver" class="weui-input" value="{{receiver}}" placeholder="请填写收货人姓名"/>
         </view>
       </view>
     </view>
@@ -203,8 +203,8 @@
           }
         })
       },
-      remove(item) {
-        this.removeCart(item, () => {
+      remove({target: {dataset: {good}}}) {
+        this.removeCart(good, () => {
           this.updateBorrowList()
         })
       },
@@ -214,10 +214,20 @@
       goMain() {
         my.switchTab({url: '/pages/index'})
       },
-      typing (type, e) {
-        if (this.isDefined(this[type])) {
-          this[type] = e.detail.value
-        }
+      typingAddress (e) {
+        this.typing('address', e)
+      },
+      typingPhone (e) {
+        this.typing('phone', e)
+      },
+      typingReceiver (e) {
+        this.typing('receiver', e)
+      }
+    }
+
+    typing (type, e) {
+      if (this.isDefined(this[type])) {
+        this[type] = e.detail.value
       }
     }
 
@@ -285,10 +295,10 @@
     left: 15px;
     right: 15px;
     bottom: 0;
-    height: 1em;
+    height: 1.5em;
     padding-left: @icon-font-size + 15rpx;
     padding-right: 4em;
-    line-height: 1;
+    line-height: 1.5;
     margin: auto;
   }
   .borrow-book-name{
@@ -346,7 +356,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      width: 2rpx;
+      width: 1px;
       height: 100%;
       margin: auto;
       background: #999;
