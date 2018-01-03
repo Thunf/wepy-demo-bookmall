@@ -4,16 +4,16 @@
   "description": "",
   "main": "dist/app.js",
   "scripts": {
-    "dev": "wepy build --watch",
-    "build": "cross-env NODE_ENV=production wepy build --no-cache",
+    "dev": "wepy build --output ant --watch",
+    "build": "cross-env NODE_ENV=production wepy build --output ant --no-cache",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "GPL-3.0",
   "dependencies": {
-    "wepy": "^1.5.8",
-    "wepy-async-function": "^1.4.4",
-    "wepy-com-toast": "^1.0.2"
+    "wepy": "^1.6.0",
+    "wepy-ant": "^1.5.9",
+    "wepy-async-function": "^1.4.4"
   },
   "devDependencies": {
     "babel-eslint": "^7.2.1",

@@ -1,5 +1,6 @@
 node_modules
 dist
+ant
 styles/
 .DB_store
 *.wpy___jb_tmp___

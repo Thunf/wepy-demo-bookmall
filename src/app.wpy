@@ -1,6 +1,6 @@
 <script>
 import wepy from 'wepy'
-import 'wepy-async-function'
+// import 'wepy-async-function'
 // import { service } from './config.js'
 
 export default class extends wepy.app {
