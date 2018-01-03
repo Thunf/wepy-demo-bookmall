@@ -110,7 +110,7 @@ export default class baseMixin extends wepy.mixin {
       // 尝试转换字符串
       title: item.toString ? item.toString() : '参数异常'
     }
-    wx.showModal(Object.assign({
+    my.showModal(Object.assign({
       showCancel: false
     }, param))
   }

@@ -1,12 +1,12 @@
 <template>
   <view class="main-detail">
     <view class="weui-panel">
-      <block wx:if="{{banners && banners.length}}">
+      <block a:if="{{banners && banners.length}}">
         <view class="detail-cover">
           <Swiper :list.sync="banners" height="200" :navigate="navigate"></Swiper>
         </view>
       </block>
-      <block wx:else>
+      <block a:else>
         <image src="{{book.image || img_banner}}" class="detail-cover" mode="aspectFit"/>
       </block>
       <view class="weui-media-box weui-media-box_text weui-cells_in-small-appmsg">
@@ -17,7 +17,7 @@
           <view>出版时间：{{book.pubtime}}</view>
         </view>
         <view class="detail-tags">
-          <text wx:for="{{book.tags}}" wx:key="index" wx:for-item="tag" class="tag">{{tag}}</text>
+          <text a:for="{{book.tags}}" a:key="index" a:for-item="tag" class="tag">{{tag}}</text>
         </view>
       </view>
     </view>
@@ -26,9 +26,9 @@
       <view class="weui-media-box weui-media-box_text">
           <view class="detail-desc-title">简介：</view>
           <view class="detail-desc">
-            <block wx:for="{{description}}" wx:key="index" wx:for-item="desc">
-              <view class="detail-text" wx:if="{{desc.type === 'text'}}">{{desc.value}}</view>
-              <image wx:elif="{{desc.type === 'image'}}" class="detail-image"
+            <block a:for="{{description}}" a:key="index" a:for-item="desc">
+              <view class="detail-text" a:if="{{desc.type === 'text'}}">{{desc.value}}</view>
+              <image a:elif="{{desc.type === 'image'}}" class="detail-image"
                src="{{desc.value || img_banner}}" mode="widthFix"/>
             </block>
           </view>
@@ -38,10 +38,10 @@
     <Screen class="fixed-bottom">
       <view style="display: flex;">
         <button @tap="toStar" class="weui-btn btn-block btn-flex-1">
-          <block wx:if="{{isCollect}}">
+          <block a:if="{{isCollect}}">
             <image class="imgicon" src="{{icon_star_active}}" mode="aspectFit"/>
             <view class="btn-text-bottom color-999">已收藏</view>
-          </block><block wx:else>
+          </block><block a:else>
             <image class="imgicon" src="{{icon_star}}" mode="aspectFit"/>
             <view class="btn-text-bottom">收藏</view>
           </block>
@@ -51,9 +51,9 @@
           <view class="btn-text-bottom">书架</view>
         </button>
         <button @tap="toAdd({{book}})" disabled="{{!isEnabled}}" class="weui-btn btn-block btn-flex-full" type="primary">
-          <text wx:if="{{!isEnabled}}">已借完</text>
-          <text wx:elif="{{book.exist}}">已添加，查看书架</text>
-          <text wx:else>借阅</text>
+          <text a:if="{{!isEnabled}}">已借完</text>
+          <text a:elif="{{book.exist}}">已添加，查看书架</text>
+          <text a:else>借阅</text>
         </button>
       </view>
       <button slot="placeholder" class="weui-btn btn-block" type="primary">借阅</button>
@@ -76,7 +76,7 @@
   export default class mainDetail extends wepy.page {
     mixins = [base, http, cart, user]
     config = {
-      navigationBarTitleText: '图书详情'
+      defaultTitle: '图书详情'
     }
     data = {
       img_banner: '/images/swiper.png',
@@ -183,7 +183,7 @@
       // this.book.exist = (stock + exist) % 2
 
       // 停止下拉状态
-      wx.stopPullDownRefresh()
+      my.stopPullDownRefresh()
     }
 
     methods = {
@@ -201,7 +201,7 @@
         // ===== 以下随机示例 =====
         // 重置本书收藏状态
         this.book.collected = newType
-        wx.showToast({
+        my.showToast({
           title: `${newTypeText}收藏！`,
           icon: 'success',
           duration: 1000
@@ -209,7 +209,7 @@
       },
       toBorrow() {
         // 查看书架
-        wx.switchTab({url: '/pages/borrow'})
+        my.switchTab({url: '/pages/borrow'})
       },
       toAdd(book) {
         // 根据业务接口处理数据
@@ -227,7 +227,7 @@
                 this.methods.toBorrow()
               } else {
                 // 不存在则提示添加成功
-                wx.showToast({
+                my.showToast({
                   title: '添加到书架成功！',
                   icon: 'success',
                   duration: 1000
@@ -241,7 +241,7 @@
             case 1001: {
               if (message && !exist) {
                 // 不存在本书时，提示去书架删减其他书
-                wx.showModal({
+                my.showModal({
                   title: '温馨提示',
                   content: message,
                   showCancel: false,
@@ -258,7 +258,7 @@
             case 4001: ;
             case 9002: {
               // 去购买套餐
-              wx.navigateTo({url: '/pages/borrow/subscribe'})
+              my.navigateTo({url: '/pages/borrow/subscribe'})
               break
             }
             default: {

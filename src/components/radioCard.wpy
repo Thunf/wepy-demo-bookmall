@@ -1,12 +1,12 @@
 <template>
   <view class="radio-card">
     <radio-group @change="radioChange">
-      <view class="radio-wrapper" wx:for="{{list}}" wx:key="index">
+      <view class="radio-wrapper" a:for="{{list}}" a:key="index">
         <radio id="{{unique}}-{{index}}" hidden value="{{item[key]}}" checked="{{item.checked}}"></radio>
 
         <label for="{{unique}}-{{index}}" class="radio-item{{item.checked ? '-checked' : '' }}">
-          <icon wx:if="{{item.checked}}" class="label-icon" type="success" size="14" color="#049BFF"></icon>
-          <text wx:else class="label-icon icon-circle" style="font-size: 14px;"></text>
+          <icon a:if="{{item.checked}}" class="label-icon" type="success" size="14" color="#049BFF"></icon>
+          <text a:else class="label-icon icon-circle" style="font-size: 14px;"></text>
           <text>{{item.period}}个月</text>
           <view class="pull-right">
             <text>每次</text>

@@ -22,7 +22,7 @@
   export default class pageIndex extends wepy.page {
     mixins = [base, http]
     config = {
-      navigationBarTitleText: '首页',
+      defaultTitle: '首页',
       navigationBarTextStyle: 'white',
       navigationBarBackgroundColor: '#049BFF'
     }

@@ -50,8 +50,8 @@
   export default class pageUser extends wepy.page {
     mixins = [base, http, user]
     config = {
-      navigationBarTitleText: '我的',
-      enablePullDownRefresh: false
+      defaultTitle: '我的',
+      pullRefresh: false
     }
     data = {
       userInfo: {

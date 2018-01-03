@@ -1,8 +1,8 @@
 <template>
   <view class="booklist">
-    <view wx:if="{{title}}" class="booklist-name">{{title}}</view>
-    <block wx:if="{{list.length > 0}}">
-      <block wx:for="{{list}}" wx:key="index">
+    <view a:if="{{title}}" class="booklist-name">{{title}}</view>
+    <block a:if="{{list.length > 0}}">
+      <block a:for="{{list}}" a:key="index">
         <navigator url="/pages/main/detail?id={{item.id}}&title={{item.title}}&status={{item.status}}" class="booklist-item clearfix">
           <view class="booklist-cover-wrapper">
             <image src="{{item.image}}" mode="widthFix" style="width:100%;" />
@@ -10,38 +10,38 @@
           <view class="booklist-content-wrapper">
             <view class="booklist-title">{{item.title}}</view>
             <view class="booklist-abstract">{{item.content}}</view>
-            <view wx:if="{{isCollectList}}" class="booklist-tags">
+            <view a:if="{{isCollectList}}" class="booklist-tags">
 
-              <block wx:if="{{item.status == '1'}}">
+              <block a:if="{{item.status == '1'}}">
                 <image src="{{icon_eye_active}}" class="imgicon" mode="aspectFit"/>
                 <text class="booklist-text color-blue">可借阅</text>
               </block>
-              <block wx:else>
+              <block a:else>
                 <image src="{{icon_eye}}" class="imgicon" mode="aspectFit"/>
                 <text class="booklist-text color-bbb">已借完</text>
               </block>
 
               <view @tap.stop="toStar({{item}}, {{index}})" class="booklist-status">
-                <block wx:if="{{item.collected == 1}}">
+                <block a:if="{{item.collected == 1}}">
                   <image class="imgicon" src="{{icon_star_active}}" mode="aspectFit"/>
                   <text class="booklist-text reset-text-star color-999">已收藏</text>
-                </block><block wx:else>
+                </block><block a:else>
                   <image class="imgicon" src="{{icon_star}}" mode="aspectFit"/>
                   <text class="booklist-text reset-text-star color-blue">收藏</text>
                 </block>
               </view>
 
             </view>
-            <view wx:else class="booklist-tags">
-              <block wx:for="{{item.tags}}" wx:key="index" wx:for-item="tag">
+            <view a:else class="booklist-tags">
+              <block a:for="{{item.tags}}" a:key="index" a:for-item="tag">
                 <view class="booklist-tag">{{tag}}</view>
               </block>
               <view class="booklist-status">
-                <block wx:if="{{item.status == '1'}}">
+                <block a:if="{{item.status == '1'}}">
                   <image src="{{icon_eye_active}}" class="imgicon" mode="aspectFit"/>
                   <text class="booklist-text color-blue">可借阅</text>
                 </block>
-                <block wx:else>
+                <block a:else>
                   <image src="{{icon_eye}}" class="imgicon" mode="aspectFit"/>
                   <text class="booklist-text color-bbb">已借完</text>
                 </block>
@@ -50,19 +50,19 @@
           </view>
         </navigator>
       </block>
-      <block wx:if="{{loading}}">
+      <block a:if="{{loading}}">
         <view class="weui-loadmore">
           <view class="weui-loading"></view>
           <view class="weui-loadmore__tips">正在加载</view>
         </view>
       </block>
-      <block wx:elif="{{noMore}}">
+      <block a:elif="{{noMore}}">
         <view class="weui-loadmore weui-loadmore_line weui-loadmore_dot">
           <view class="weui-loadmore__tips weui-loadmore__tips_in-line weui-loadmore__tips_in-dot"></view>
         </view>
       </block>
     </block>
-    <block wx:else>
+    <block a:else>
       <view class="weui-loadmore weui-loadmore_line">
         <view class="weui-loadmore__tips weui-loadmore__tips_in-line">暂无书籍</view>
       </view>
@@ -137,7 +137,7 @@
             if (this.isObject(this.list[index])) {
               this.list[index].collected = newType
             }
-            wx.showToast({
+            my.showToast({
               title: `${newTypeText}收藏！`,
               icon: 'success',
               duration: 1000
@@ -147,7 +147,7 @@
             // =============================== 调试代码 ===============================
             // this.book.collected = newType
             // =============================== 调试代码 ===============================
-            wx.showToast({
+            my.showToast({
               title: `${newTypeText}收藏失败！`,
               icon: 'loading',
               image: '/images/icon/icon-cancel.png',

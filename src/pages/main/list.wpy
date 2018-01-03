@@ -1,9 +1,9 @@
 <template>
   <view class="main-list">
-    <view class="main-list-title clearfix" wx:if="{{keywords && keywords.length}}">
+    <view class="main-list-title clearfix" a:if="{{keywords && keywords.length}}">
       <view class="pull-left width-8p">
-        <block wx:for="{{keywords}}" wx:key="index">
-          <text wx:if="{{index > 0}}">，</text>
+        <block a:for="{{keywords}}" a:key="index">
+          <text a:if="{{index > 0}}">，</text>
           <text>{{item}}</text>
         </block>
       </view>
@@ -24,7 +24,7 @@
   export default class mainList extends wepy.page {
     mixins = [base, http]
     config = {
-      navigationBarTitleText: '找书'
+      defaultTitle: '找书'
     }
     data = {
       params: {},

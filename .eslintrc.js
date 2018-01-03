@@ -28,6 +28,6 @@ module.exports = {
     'space-before-function-paren': 0
   },
   globals: {
-    wx: true
+    my: true
   }
 }

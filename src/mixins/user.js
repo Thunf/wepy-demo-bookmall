@@ -107,7 +107,7 @@ export default class userMixin extends wepy.mixin {
   // 提示用户开启授权
   _wxAuthModal(callback) {
     // 先判断是否支持开启授权页的API
-    wx.openSetting && wx.showModal({
+    my.openSetting && my.showModal({
       title: '授权提示',
       content: 'BookMall希望获得以下权限：\n · 获取您的公开信息（昵称、头像等）',
       confirmText: '去授权',
@@ -123,9 +123,9 @@ export default class userMixin extends wepy.mixin {
 
   // 打开授权页
   _wxOpenSetting(callback) {
-    wx.openSetting && wx.openSetting({
+    my.openSetting && my.openSetting({
       success: ({authSetting}) => {
-        console.log('wx.openSetting.success', authSetting)
+        console.log('my.openSetting.success', authSetting)
         if (authSetting['scope.userInfo']) {
           // 用户打开设置，重新获取信息
           this._wxUserInfo(callback)

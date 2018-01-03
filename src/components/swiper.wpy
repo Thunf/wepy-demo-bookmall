@@ -3,12 +3,12 @@
    indicator-dots="{{indicatorDots}}" 
    indicator-color="{{indicatorColor}}"
    indicator-active-color="{{indicatorActiveColor}}">
-    <block wx:for="{{list}}" wx:key="index">
+    <block a:for="{{list}}" a:key="index">
       <swiper-item>
-        <navigator wx:if="{{item.url}}" url="{{item.url}}">
+        <navigator a:if="{{item.url}}" url="{{item.url}}">
           <image src="{{item.image}}" style="height:{{style_height}}" class="swiper-image" mode="widthFix"/>
         </navigator>
-        <view wx:else style="height:{{style_height}}">
+        <view a:else style="height:{{style_height}}">
           <image src="{{item.image}}" style="height:{{style_height}}" class="swiper-image" mode="aspectFit"/>
         </view>
       </swiper-item>

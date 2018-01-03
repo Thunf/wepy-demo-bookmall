@@ -1,14 +1,14 @@
 <template>
   <view class="category clearfix">
-    <block wx:for="{{list}}" wx:key="index">
+    <block a:for="{{list}}" a:key="index">
 
-      <navigator wx:if="{{item.url}}" url="{{item.url}}" class="category-item" style="width:{{style_width}}">
+      <navigator a:if="{{item.url}}" url="{{item.url}}" class="category-item" style="width:{{style_width}}">
         <view class="category-icon-wrapper">
           <image src="{{item.image}}" class="category-icon" mode="aspectFit"/>
         </view>
         <view class="category-text">{{item.title}}</view>
       </navigator>
-      <view wx:else class="category-item" style="width:{{style_width}}">
+      <view a:else class="category-item" style="width:{{style_width}}">
         <view class="category-icon-wrapper">
           <image src="{{item.image}}" class="category-icon" mode="aspectFit"/>
         </view>

@@ -1,15 +1,15 @@
 <template>
   <view class="main-search">
-    <block wx:if="{{items1}}">
+    <block a:if="{{items1}}">
       <checkboxButton1 :title.sync="title1" :list.sync="items1" :value.sync="value1"></checkboxButton1>
     </block>
-    <block wx:if="{{items2}}">
+    <block a:if="{{items2}}">
       <checkboxButton2 :title.sync="title2" :list.sync="items2" :value.sync="value2"></checkboxButton2>
     </block>
-    <block wx:if="{{items3}}">
+    <block a:if="{{items3}}">
       <checkboxButton3 :title.sync="title3" :list.sync="items3" :value.sync="value3"></checkboxButton3>
     </block>
-    <block wx:if="{{items4}}">
+    <block a:if="{{items4}}">
       <checkboxButton4 :title.sync="title4" :list.sync="items4" :value.sync="value4"></checkboxButton4>
     </block>
     <button @tap="search" class="weui-btn" type="primary">搜索</button>
@@ -26,7 +26,7 @@
   export default class mainSearch extends wepy.page {
     mixins = [base, http]
     config = {
-      navigationBarTitleText: '分类选择'
+      defaultTitle: '分类选择'
     }
     data = {
       key1: '',
@@ -72,7 +72,7 @@
     }
 
     onPullDownRefresh() {
-      wx.stopPullDownRefresh()
+      my.stopPullDownRefresh()
     }
 
     // 初始化页面数据
@@ -117,7 +117,7 @@
         },
         fail: ({code, data}) => {
           // 如果获取失败，就直接跳转到列表页
-          wx.redirectTo({
+          my.redirectTo({
             url: `/pages/main/list`
           })
         }
@@ -147,7 +147,7 @@
           }
         })
         params.title = params.title.join(' ')
-        wx.redirectTo({
+        my.redirectTo({
           url: `/pages/main/list?params=${JSON.stringify(params)}`
         })
       }

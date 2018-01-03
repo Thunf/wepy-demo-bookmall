@@ -1,47 +1,47 @@
 <template>
   <view class="user-borrow">
-    <block wx:if="{{loading}}">
+    <block a:if="{{loading}}">
       <view class="weui-loadmore">
         <view class="weui-loading"></view>
         <view class="weui-loadmore__tips">正在加载</view>
       </view>
     </block>
-    <block wx:elif="{{list && list.length > 0}}">
-      <block wx:for="{{list}}" wx:key="index">
+    <block a:elif="{{list && list.length > 0}}">
+      <block a:for="{{list}}" a:key="index">
         <view class="weui-panel">
           <view class="weui-panel__hd">
             <text>{{item.date || '借阅日期'}}</text>
             <text class="pull-right">
-              <block wx:if="{{item.status == 2}}">
-                <block wx:if="{{item.remain < 0}}">
+              <block a:if="{{item.status == 2}}">
+                <block a:if="{{item.remain < 0}}">
                   <text>逾期 </text>
                   <text class="color-red">{{-item.remain}}</text>
                   <text> 天未归还</text>
                 </block>
-                <block wx:else>
+                <block a:else>
                   <text>还剩 </text>
                   <text class="color-green">{{item.remain}}</text>
                   <text> 天需归还</text>
                 </block>
               </block>
-              <text wx:else>{{item.statusText || '借阅状态'}}</text>
+              <text a:else>{{item.statusText || '借阅状态'}}</text>
             </text>
           </view>
           <view class="weui-panel__bd">
             <view class="weui-media-box weui-media-box_appmsg">
               <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
-                <block wx:for="{{item.books}}" wx:key="index" wx:for-item="book">
+                <block a:for="{{item.books}}" a:key="index" a:for-item="book">
                   <image class="weui-media-box__thumb" src="{{book.image}}" mode="aspectFit"/>
                 </block>
               </view>
               <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
-                <block wx:for="{{item.books}}" wx:key="index" wx:for-item="book">
+                <block a:for="{{item.books}}" a:key="index" a:for-item="book">
                   <view class="weui-media-box__desc">{{index+1}}. {{book.title}}</view>
                 </block>
               </view>
             </view>
           </view>
-          <view wx:if="{{2 == item.status}}" class="weui-panel__ft weui-cells">
+          <view a:if="{{2 == item.status}}" class="weui-panel__ft weui-cells">
             <view class="weui-cell">
               <button @tap="goReturn({{item.id || ''}})" class="weui-btn mini-btn" type="default" size="mini">立即还书</button>
             </view>
@@ -52,7 +52,7 @@
         <view class="weui-loadmore__tips weui-loadmore__tips_in-line weui-loadmore__tips_in-dot"></view>
       </view>
     </block>
-    <block wx:else>
+    <block a:else>
       <view class="weui-loadmore weui-loadmore_line">
         <view class="weui-loadmore__tips weui-loadmore__tips_in-line">暂无数据</view>
       </view>
@@ -70,7 +70,7 @@
   export default class userBorrow extends wepy.page {
     mixins = [base, http]
     config = {
-      navigationBarTitleText: '我的借阅'
+      defaultTitle: '我的借阅'
     }
     data = {
       loading: false,
@@ -111,7 +111,7 @@
     methods = {
       goReturn(id) {
         const str = this.getString(id)
-        wx.navigateTo({url: `/pages/user/return?id=${str}`})
+        my.navigateTo({url: `/pages/user/return?id=${str}`})
       }
     }
 

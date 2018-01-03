@@ -2,14 +2,14 @@
   <view class="user-subscribe">
     <view class="subscribe-title">我的订阅</view>
     <view class="weui-flex subscribe-wrapper">
-      <block wx:for="{{list}}" wx:key="index">
+      <block a:for="{{list}}" a:key="index">
         <view class="weui-flex__item subscribe-item">
           <view class="color-666 item-title">{{item.title}}</view>
           <view class="color-bbb h5">{{item.subtitle}}</view>
         </view>
       </block>
     </view>
-    <button @tap="change" wx:if="{{loaded && isShowBtn}}" class="weui-btn mini-btn" type="primary" size="mini">立即续订</button>
+    <button @tap="change" a:if="{{loaded && isShowBtn}}" class="weui-btn mini-btn" type="primary" size="mini">立即续订</button>
   </view>
 </template>
 
@@ -23,7 +23,7 @@
   export default class userSubscribe extends wepy.page {
     mixins = [base, http, user]
     config = {
-      navigationBarTitleText: '我的订阅'
+      defaultTitle: '我的订阅'
     }
     data = {
       // 后置显示按钮
@@ -96,7 +96,7 @@
 
     methods = {
       change() {
-        wx.navigateTo({
+        my.navigateTo({
           url: '/pages/borrow/subscribe'
         })
       }

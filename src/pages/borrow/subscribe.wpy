@@ -4,7 +4,7 @@
     <view class="weui-cells weui-cells_after-title borrow-address">
       <view class="weui-cell block">
         <view class="weui-media-box__title h4 color-666">订阅时长</view>
-        <block wx:if="{{list && list.length > 0}}">
+        <block a:if="{{list && list.length > 0}}">
           <radioCard :list.sync="list" :value.sync="value" key="id"></radioCard>
         </block>
       </view>
@@ -63,8 +63,8 @@
   export default class borrowSubscribe extends wepy.page {
     mixins = [base, http, user]
     config = {
-      navigationBarTitleText: '订阅套餐',
-      enablePullDownRefresh: false
+      defaultTitle: '订阅套餐',
+      pullRefresh: false
     }
     data = {
       // 手机号/验证码
@@ -204,17 +204,17 @@
           paySign: ''
         })
         // 成功需要唤起支付
-        wx.requestPayment(Object.assign({}, params, {
+        my.requestPayment(Object.assign({}, params, {
           success: (res) => {
-            wx.showModal({
+            my.showModal({
               title: '支付提示',
               content: '支付成功！',
               showCancel: false,
-              success: (res) => { wx.switchTab({url: '/pages/borrow'}) }
+              success: (res) => { my.switchTab({url: '/pages/borrow'}) }
             })
           },
           fail: (res) => {
-            wx.showModal({
+            my.showModal({
               title: '支付提示',
               // content: '支付失败，请重新尝试！',
               content: '示例没法做支付,就当成功了吧~',
@@ -229,7 +229,7 @@
                     status: '未借阅'
                   }
                 })
-                wx.navigateBack()
+                my.navigateBack()
               }
             })
           },

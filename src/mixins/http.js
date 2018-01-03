@@ -35,7 +35,7 @@ export default class httpMixin extends wepy.mixin {
     {success = () => {}, fail = () => {}, complete = () => {} }
   ) {
     // 增强体验：加载中
-    wx.showNavigationBarLoading()
+    my.showNavigationBarLoading()
 
     // 构造请求体
     const request = {
@@ -86,9 +86,9 @@ export default class httpMixin extends wepy.mixin {
         // 控制台调试日志
         console.log('[COMPLETE]', res)
         // 隐藏加载提示
-        wx.hideNavigationBarLoading()
+        my.hideNavigationBarLoading()
         // 停止下拉状态
-        wx.stopPullDownRefresh()
+        my.stopPullDownRefresh()
         // 完成回调
         return (() => {
           this.isFunction(complete) && complete(res)

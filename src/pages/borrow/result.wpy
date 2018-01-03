@@ -1,7 +1,7 @@
 <template>
   <view class="borrow-result tip-page">
 
-    <block wx:if="{{type == 0}}">
+    <block a:if="{{type == 0}}">
       <icon class="tip-icon" type="success" size="70" color="#049BFF"></icon>
       <view class="h3 color-blue">借阅成功</view>
       <view class="h4 color-999">
@@ -9,7 +9,7 @@
         <view>乍暖还寒时候 最难将息</view>
       </view>
       <button @tap="jump" class="weui-btn mini-btn" type="default" size="mini">查看订单</button>
-    </block><block wx:else>
+    </block><block a:else>
       <icon class="tip-icon" type="warn" size="70"></icon>
       <view class="h3 color-blue">借阅失败</view>
       <view class="h4 color-999">
@@ -28,8 +28,8 @@
   export default class borrowResult extends wepy.page {
     mixins = [base]
     config = {
-      navigationBarTitleText: '提示',
-      enablePullDownRefresh: false
+      defaultTitle: '提示',
+      pullRefresh: false
     }
     data = {
       // type: 0成功, 失败 > 0
@@ -49,10 +49,10 @@
 
     methods = {
       jump() {
-        wx.redirectTo({url: '/pages/user/borrow'})
+        my.redirectTo({url: '/pages/user/borrow'})
       },
       back() {
-        wx.navigateBack({delta: 1})
+        my.navigateBack({delta: 1})
       }
     }
 

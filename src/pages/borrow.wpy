@@ -1,5 +1,5 @@
 <template>
-  <view wx:if="{{canBorrow}}" class="page-borrow">
+  <view a:if="{{canBorrow}}" class="page-borrow">
     <view class="weui-panel borrow-list">
       <view class="weui-panel__hd">
         <text>本次最多可借</text>
@@ -8,15 +8,15 @@
         <text class="color-red">{{borrowTime}}次</text><text>。</text>
       </view>
       <view class="weui-panel__bd">
-        <block wx:for="{{borrowList}}" wx:key="index">
+        <block a:for="{{borrowList}}" a:key="index">
           <view class="weui-media-box weui-media-box_text">
-            <block wx:if="{{item.good}}">
+            <block a:if="{{item.good}}">
               <view class="icon-order-circle">{{index+1}}</view>
               <view class="borrow-name-wrapper">
                 <view class="borrow-book-name">{{item.good.name}}</view>
               </view>
               <view @tap="remove({{item.good}})" class="icon-delete reset-pull-right"></view>
-            </block><block wx:else>
+            </block><block a:else>
               <view class="icon-order-empty">{{index+1}}</view>
               <view class="borrow-name-wrapper">
                 <view class="borrow-book-name color-ddd">空</view>
@@ -33,7 +33,7 @@
         <view class="weui-cell__bd h4">
           <textarea @input="typing('address')" class="weui-textarea" value="{{address}}" placeholder="请填写收货地址" auto-height/>
         </view>
-        <view @tap="chooseAddress" wx:if="{{showChooseAddress}}" class="link link-red reset-pull-middle">
+        <view @tap="chooseAddress" a:if="{{showChooseAddress}}" class="link link-red reset-pull-middle">
           <image src="/images/icon/icon-location@2x.png" class="imgicon icon-location" mode="aspectFit"/>
         </view>
       </view>
@@ -56,8 +56,8 @@
     </view>
     <button @tap="borrow" class="weui-btn btn-primary" type="primary">确认</button>
   </view>
-  <view wx:else class="text-center tip-page page-borrow-tip">
-    <block wx:if="{{loaded}}">
+  <view a:else class="text-center tip-page page-borrow-tip">
+    <block a:if="{{loaded}}">
       <icon class="tip-icon" type="cancel" size="70" color="#bbb"></icon>
       <view class="h4">您还没有订阅，快去选择吧~</view>
       <button @tap="toSubscribe" class="weui-btn mini-btn" type="primary" size="mini">立即订阅</button>
@@ -76,8 +76,8 @@
   export default class pageBorrow extends wepy.page {
     mixins = [base, http, user, cart]
     config = {
-      navigationBarTitleText: '书架',
-      enablePullDownRefresh: false
+      defaultTitle: '书架',
+      pullRefresh: false
     }
     data = {
       loaded: false,
@@ -94,7 +94,7 @@
 
     computed = {
       showChooseAddress() {
-        return !!wx.chooseAddress
+        return !!my.chooseAddress
       },
       canBorrow() {
         return +this.borrowCount && +this.borrowTime
@@ -162,14 +162,14 @@
           }
 
           // 提示成功/失败
-          wx.navigateTo({
+          my.navigateTo({
             // type: 成功 = 0，失败 > 0，
             url: `/pages/borrow/result?type=${this.getNumber(res.code)}&message=${res.message}`
           })
         }, 200)
       },
       chooseAddress() {
-        wx.chooseAddress && wx.chooseAddress({
+        my.chooseAddress && my.chooseAddress({
           success: (res) => {
             const {
               // 收货人姓名
@@ -209,10 +209,10 @@
         })
       },
       toSubscribe() {
-        wx.navigateTo({url: '/pages/borrow/subscribe'})
+        my.navigateTo({url: '/pages/borrow/subscribe'})
       },
       goMain() {
-        wx.switchTab({url: '/pages/index'})
+        my.switchTab({url: '/pages/index'})
       },
       typing (type, e) {
         if (this.isDefined(this[type])) {

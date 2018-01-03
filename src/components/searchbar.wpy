@@ -4,7 +4,7 @@
       <view class="weui-search-bar__box">
         <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
         <input type="text" class="weui-search-bar__input" placeholder="{{placeholder}}" value="{{inputVal}}" focus="{{inputShowed}}" @input="inputTyping" />
-        <block wx:if="{{inputVal.length > 0}}">
+        <block a:if="{{inputVal.length > 0}}">
           <view class="weui-icon-clear" @tap="clearInput">
             <icon type="clear" size="14"></icon>
           </view>
@@ -43,7 +43,7 @@
         const params = {
           key_word: this.inputVal || this.placeholder
         }
-        wx.navigateTo({
+        my.navigateTo({
           url: `/pages/main/list?params=${JSON.stringify(params)}`
         })
       },
