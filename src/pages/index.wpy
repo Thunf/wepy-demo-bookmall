@@ -30,7 +30,7 @@
       searchText: 'book',
       swipers: [
         // 占位图，防止请求错误无图显示
-        {image: '/images/swiper.png', url: '/pages/main/search'}
+        {image: '/images/swiper.png'}
       ],
       categorys: [
         {title: '今', image: funImages[0]},
