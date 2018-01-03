@@ -2,7 +2,7 @@
 
 Demo codes for [🐼📖](http://7xrhcw.com1.z0.glb.clouddn.com/wechat_default_344.jpg) which used in a very early version.
 
-> `new`支付宝小程序示例（ **alipay-mini-app got in branch: alipay**）：
+> [`new` 支付宝小程序示例（ **alipay-mini-app got in branch: alipay**）](https://github.com/Thunf/wepy-demo-bookmall/tree/alipay)
 
 
 ## Features
