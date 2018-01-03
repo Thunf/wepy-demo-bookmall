@@ -88,7 +88,7 @@
         // })
 
         // =============== 随机示例 ===============
-        my.showToast({title: '提交成功！', icon: 'success', duration: 1000})
+        my.showToast({content: '提交成功！', type: 'success', duration: 1000})
         setTimeout(my.navigateBack, 1000)
       },
       typing (type, e) {

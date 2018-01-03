@@ -202,8 +202,8 @@
         // 重置本书收藏状态
         this.book.collected = newType
         my.showToast({
-          title: `${newTypeText}收藏！`,
-          icon: 'success',
+          content: `${newTypeText}收藏！`,
+          type: 'success',
           duration: 1000
         })
       },
@@ -228,8 +228,8 @@
               } else {
                 // 不存在则提示添加成功
                 my.showToast({
-                  title: '添加到书架成功！',
-                  icon: 'success',
+                  content: '添加到书架成功！',
+                  type: 'success',
                   duration: 1000
                 })
                 // 临时打标
@@ -330,6 +330,8 @@
     width: 3.5em;
     line-height: 1.6;
     overflow: hidden;
+    border: none;
+    border-radius: 0;
   }
   .btn-flex-full{
     flex: 1 1 auto;

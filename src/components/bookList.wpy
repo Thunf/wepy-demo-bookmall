@@ -138,8 +138,8 @@
               this.list[index].collected = newType
             }
             my.showToast({
-              title: `${newTypeText}收藏！`,
-              icon: 'success',
+              content: `${newTypeText}收藏！`,
+              type: 'success',
               duration: 1000
             })
           },
@@ -148,9 +148,8 @@
             // this.book.collected = newType
             // =============================== 调试代码 ===============================
             my.showToast({
-              title: `${newTypeText}收藏失败！`,
-              icon: 'loading',
-              image: '/images/icon/icon-cancel.png',
+              content: `${newTypeText}收藏失败！`,
+              type: 'fail',
               duration: 1000
             })
           }
