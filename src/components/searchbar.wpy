@@ -10,10 +10,10 @@
           </view>
         </block>
       </view>
-      <label class="weui-search-bar__label" hidden="{{inputShowed}}" @tap="showInput">
+      <view class="weui-search-bar__label" hidden="{{inputShowed}}" @tap="showInput">
         <icon class="weui-icon-search" type="search" size="14"></icon>
         <view class="weui-search-bar__text">{{placeholder}}</view>
-      </label>
+      </view>
     </view>
     <view class="weui-search-bar__cancel-btn" hidden="{{!inputShowed}}" @tap="search">搜索</view>
   </view>

@@ -14,6 +14,7 @@
 .weui-icon-search {
     margin-right: 8px;
     font-size:inherit;
+    vertical-align: sub;
 }
 .weui-icon-search_in-box {
     position: absolute;
@@ -44,6 +45,7 @@
     height: @weuiSearchBarHeight;
     line-height: @weuiSearchBarHeight;
     font-size: 14px;
+    box-sizing: border-box;
 }
 .weui-icon-clear {
     position: absolute;
