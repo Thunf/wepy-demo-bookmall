@@ -2,6 +2,7 @@
 
 Demo codes for [🐼📖](http://7xrhcw.com1.z0.glb.clouddn.com/wechat_default_344.jpg) which used in a very early version.
 
+> `new`支付宝小程序示例（ **alipay-mini-app got in branch: alipay**）：
 
 
 ## Features
@@ -24,6 +25,13 @@ npm install
 
 npm run dev
 ```
+
+### For Alipay
+```
+git checkout alipay
+npm run dev
+```
+
 
 > **Remind**
 - 使用微信开发者工具新建项目，本地开发**选择 `dist` 目录**
