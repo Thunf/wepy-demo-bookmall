@@ -241,10 +241,9 @@
             case 1001: {
               if (message && !exist) {
                 // 不存在本书时，提示去书架删减其他书
-                my.showModal({
+                my.alert({
                   title: '温馨提示',
                   content: message,
-                  showCancel: false,
                   success: () => {
                     this.methods.toBorrow()
                   }

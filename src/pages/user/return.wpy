@@ -10,12 +10,12 @@
       <view class="weui-cells weui-cells_after-title">
         <view class="weui-cell weui-cell_input">
           <view class="weui-cell__bd">
-            <input @input="typing('co')" class="weui-input" value="{{express_co}}" placeholder="请输入快递公司"/>
+            <input @input="typingCo" class="weui-input" value="{{express_co}}" placeholder="请输入快递公司"/>
           </view>
         </view>
         <view class="weui-cell weui-cell_input">
           <view class="weui-cell__bd">
-            <input @input="typing('id')" class="weui-input" value="{{express_id}}" placeholder="请输入快递单号"/>
+            <input @input="typingId" class="weui-input" value="{{express_id}}" placeholder="请输入快递单号"/>
           </view>
         </view>
       </view>
@@ -91,11 +91,18 @@
         my.showToast({content: '提交成功！', type: 'success', duration: 1000})
         setTimeout(my.navigateBack, 1000)
       },
-      typing (type, e) {
-        const key = `express_${type}`
-        if (this.isDefined(this[key])) {
-          this[key] = e.detail.value
-        }
+      typingCo (e) {
+        this.typing('co', e)
+      },
+      typingId (e) {
+        this.typing('id', e)
+      }
+    }
+
+    typing (type, e) {
+      const key = `express_${type}`
+      if (this.isDefined(this[key])) {
+        this[key] = e.detail.value
       }
     }
   }

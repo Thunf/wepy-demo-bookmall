@@ -206,19 +206,17 @@
         // 成功需要唤起支付
         my.requestPayment(Object.assign({}, params, {
           success: (res) => {
-            my.showModal({
+            my.alert({
               title: '支付提示',
               content: '支付成功！',
-              showCancel: false,
               success: (res) => { my.switchTab({url: '/pages/borrow'}) }
             })
           },
           fail: (res) => {
-            my.showModal({
+            my.alert({
               title: '支付提示',
               // content: '支付失败，请重新尝试！',
               content: '示例没法做支付,就当成功了吧~',
-              showCancel: false,
               success: (res) => {
                 // ============ 假装支付成功:需要更新状态 ============
                 this.$parent.$updateGlobalData('user', {
