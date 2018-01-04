@@ -114,6 +114,15 @@
       this.initPageData()
     }
 
+    onHide() {
+      // 页面隐藏
+    }
+    onUnload() {
+      // 页面被关闭
+      clearTimeout(this.timer)
+      this.timing(0)
+    }
+
     // 初始化页面数据
     initPageData() {
       // 根据业务接口处理数据:请求套餐详情
@@ -213,35 +222,37 @@
         // 成功需要唤起支付
         my.tradePay(Object.assign({}, params, {
           success: (res) => {
-            my.alert({
-              title: '支付提示',
+            my.showToast({
               content: '支付成功！',
-              success: (res) => {
-                // ============ 假装支付成功:需要更新状态 ============
-                this.$parent.$updateGlobalData('user', {
-                  packages: {
-                    times: this.list[this.listIndex].times,
-                    remain: this.list[this.listIndex].times,
-                    quantity: this.list[this.listIndex].quantity,
-                    status: '未借阅'
-                  }
-                })
-                my.switchTab({url: '/pages/borrow'})
-              }
+              type: 'success'
             })
           },
           fail: (res) => {
-            my.alert({
-              title: '支付提示',
-              content: '支付失败，请重新尝试！',
-              success: (res) => {
-                // my.navigateBack()
-              }
+            my.showToast({
+              content: '支付失败！',
+              type: 'fail'
             })
           },
-          complete: () => { this.loading = false }
+          complete: () => {
+            this.loading = false
+            this.successPay()
+          }
         }))
       }, 100)
+    }
+
+    // ============ 假装支付成功:需要更新状态 ============
+    successPay() {
+      console.log('[successPay] 假装支付成功:需要更新状态')
+      this.$parent.$updateGlobalData('user', {
+        packages: {
+          times: this.list[this.listIndex].times,
+          remain: this.list[this.listIndex].times,
+          quantity: this.list[this.listIndex].quantity,
+          status: '未借阅'
+        }
+      })
+      my.switchTab({url: '/pages/borrow'})
     }
 
     timing(time) {

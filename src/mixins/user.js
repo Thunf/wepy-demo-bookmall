@@ -31,6 +31,7 @@ export default class userMixin extends wepy.mixin {
   $login(success = () => {}, noAutoLogin) {
     // 先登录
     wepy.login({
+      scopes: 'auth_user',
       success: (res) => {
         console.log('wepy.login.success:', res)
 
