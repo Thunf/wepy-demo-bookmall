@@ -4,7 +4,7 @@
    indicator-color="{{indicatorColor}}"
    indicator-active-color="{{indicatorActiveColor}}">
     <block a:for="{{list}}" a:key="index">
-      <swiper-item>
+      <swiper-item class="swiper-item">
         <navigator a:if="{{item.url}}" url="{{item.url}}">
           <image src="{{item.image}}" style="height:{{style_height}}" class="swiper-image" mode="widthFix"/>
         </navigator>
@@ -65,7 +65,14 @@
 <style type="less">
 swiper,
 .swiper{
+  position: relative;
   width: 100%;
+}
+
+swiper-item,
+.swiper-item{
+  position: relative;
+  display: block;
 }
 
 .swiper-image{
