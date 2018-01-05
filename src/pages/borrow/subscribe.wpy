@@ -291,6 +291,9 @@
       }
     }
   }
+  .weui-cells__tips{
+    margin-bottom: 2em;
+  }
 
   .reset-label-left{
     color: #999;
@@ -304,6 +307,7 @@
     line-height: 0;
     margin-left: 1em;
     padding-left: 1em;
+    width: 7em;
   }
 
   .reset-input{
