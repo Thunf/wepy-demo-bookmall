@@ -1,14 +1,16 @@
 # wepy-demo-bookmall
 
-Demo codes for [🐼📖](http://7xrhcw.com1.z0.glb.clouddn.com/wechat_default_344.jpg) which used in a very early version.
+Demo codes for [🐼满熊阅读📖](https://img003.qufenqi.com/products/b4/54/b4543ad35eb9486354397bf33af8f8b5.jpg) which used in a very early version.
 
 > [`new` 支付宝小程序示例（ **alipay-mini-app got in branch: alipay**）](https://github.com/Thunf/wepy-demo-bookmall/tree/alipay)
 
 
 ## Features
-
 Gifing...
 
+
+## Related miniApp
+![满熊阅读](https://img003.qufenqi.com/products/b4/54/b4543ad35eb9486354397bf33af8f8b5.jpg)
 
 
 ## Usage
