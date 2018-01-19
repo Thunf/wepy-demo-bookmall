@@ -10,8 +10,12 @@ Gifing...
 
 
 ## Related miniApp
-![满熊阅读](https://img003.qufenqi.com/products/b4/54/b4543ad35eb9486354397bf33af8f8b5.jpg)
 
+<div>
+<img src="https://img003.qufenqi.com/products/b4/54/b4543ad35eb9486354397bf33af8f8b5.jpg" width="200" alt="满熊阅读"/>
+<img src="https://img003.qufenqi.com/products/b0/11/b0110e4cfdfe7c8ce5f9dabf5ee34be2.jpg" width="200" alt="大白车"/>
+<img src="https://img002.qufenqi.com/products/5d/a2/5da2bb5a6b5b149e8e841b133fc7c657.jpg" width="200" alt="趣店招聘"/>
+</div>
 
 ## Usage
 
