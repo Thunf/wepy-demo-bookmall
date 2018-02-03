@@ -86,8 +86,8 @@
       navigate: false,
       book: {
         id: '1825',
-        name: 'loading',
-        author: 'loading',
+        name: '假如生活欺骗了你',
+        author: '普希金',
         tags: ['诗歌', '普希金'],
         pubtime: '1825年',
         pubcompany: '俄国',
@@ -135,18 +135,13 @@
       const id = query && +query.id
       const title = query && query.title
       const status = query && +query.status
-      const self = this
 
       // ======== 此处示例代码，方便示例展示 ========
-      setTimeout(() => {
-        self.book = Object.assign({}, self.book, {
-          id: self.getString(id)self.book.id,
-          name: title || self.book.name,
-          stock: Math.abs((status || Math.round(Math.random())) - 1)
-        })
-        self.$apply()
-      }, 2000)
-      
+      this.book = Object.assign({}, this.book, {
+        id: this.getString(id) || this.book.id,
+        name: title || this.book.name,
+        stock: Math.abs((status || Math.round(Math.random())) - 1)
+      })
     }
 
     onShow() {
