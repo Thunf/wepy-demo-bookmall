@@ -134,19 +134,19 @@
     onLoad(query) {
       const id = query && +query.id
       const title = query && query.title
+      const author = query && query.author
       const status = query && +query.status
-      const self = this
 
       // ======== 此处示例代码，方便示例展示 ========
       setTimeout(() => {
-        self.book = Object.assign({}, self.book, {
-          id: self.getString(id)self.book.id,
-          name: title || self.book.name,
+        this.book = Object.assign({}, this.book, {
+          id: this.getString(id) || this.book.id,
+          name: title || '假如生活欺骗了你',
+          author: author || '普希金',
           stock: Math.abs((status || Math.round(Math.random())) - 1)
         })
-        self.$apply()
-      }, 2000)
-      
+        this.$apply()
+      }, 1000)
     }
 
     onShow() {
