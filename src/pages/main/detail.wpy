@@ -86,8 +86,8 @@
       navigate: false,
       book: {
         id: '1825',
-        name: 'loading',
-        author: 'loading',
+        name: '假如生活欺骗了你',
+        author: '普希金',
         tags: ['诗歌', '普希金'],
         pubtime: '1825年',
         pubcompany: '俄国',
