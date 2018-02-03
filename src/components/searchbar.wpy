@@ -3,16 +3,16 @@
     <view class="weui-search-bar__form">
       <view class="weui-search-bar__box">
         <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
-        <input type="text" class="weui-search-bar__input" placeholder="{{placeholder}}" value="{{inputVal}}" focus="{{inputShowed}}" @input="inputTyping" />
+        <input type="text" class="weui-search-bar__input" placeholder="{{placeholder}}" value="{{inputVal}}" focus="{{inputShowed}}" @input="inputTyping" @blur="showInput(false)" confirm-type="search" @confirm="search"/>
         <block wx:if="{{inputVal.length > 0}}">
           <view class="weui-icon-clear" @tap="clearInput">
             <icon type="clear" size="14"></icon>
           </view>
         </block>
       </view>
-      <label class="weui-search-bar__label" hidden="{{inputShowed}}" @tap="showInput">
+      <label class="weui-search-bar__label" hidden="{{inputShowed}}" @tap="showInput(true)">
         <icon class="weui-icon-search" type="search" size="14"></icon>
-        <view class="weui-search-bar__text">{{placeholder}}</view>
+        <view class="weui-search-bar__text">{{computedPlaceholder}}</view>
       </label>
     </view>
     <view class="weui-search-bar__cancel-btn" hidden="{{!inputShowed}}" @tap="search">搜索</view>
@@ -35,9 +35,16 @@
       inputVal: ''
     }
 
+    computed = {
+      computedPlaceholder() {
+        return this.inputVal || this.placeholder
+      }
+    }
+
     methods = {
-      showInput () {
-        this.inputShowed = true
+      showInput (isShow) {
+        this.inputShowed = isShow === 'true'
+        this.$apply()
       },
       search () {
         const params = {
